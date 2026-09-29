@@ -1,0 +1,73 @@
+.tag-dialog-form.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 400px;
+}
+
+.tag-dialog-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tag-dialog-form label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tag-dialog-form .input {
+    height: 36px;
+    background: var(--bg-header);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    padding: 0 10px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.tag-dialog-form .input:focus {
+    border-color: var(--accent);
+}
+
+.tag-dialog-form .input-error {
+    border-color: var(--danger) !important;
+}
+
+.tag-dialog-form .footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.tag-dialog-form .btn {
+    height: 36px;
+    padding: 0 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease;
+}
+
+.tag-dialog-form .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-main);
+}
+
+.tag-dialog-form .btn-secondary:hover {
+    background: var(--bg-hover);
+}
+
+.tag-dialog-form .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.tag-dialog-form .btn-primary:hover {
+    background: var(--accent-hover);
+}

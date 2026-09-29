@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.tauri.app/config/2",
+    "productName": "Gerenciador de Músicas",
+    "version": "1.0.0",
+    "identifier": "com.caio.gerenciadormusicas",
+
+    "build": {
+        "beforeDevCommand": "bun run dev",
+        "devUrl": "http://localhost:1420",
+
+        "beforeBuildCommand": "bun run build",
+        
+        "frontendDist": "../builds/web"
+    },
+
+    "app": {
+        "windows": [
+            {
+                "title": "Gerenciador de Músicas",
+                "width": 1440,
+                "height": 720,
+                "minWidth": 900,
+                "minHeight": 540,
+                "center": true
+            }
+        ],
+        "security": {
+            "csp": null
+        }
+    },
+
+    "bundle": {
+        "active": false
+    }
+}

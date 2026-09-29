@@ -1,0 +1,61 @@
+.message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 340px;
+}
+
+.message-text {
+    color: var(--text-muted);
+    font-size: 13px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.message-content .footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.message-content .btn {
+    height: 34px;
+    padding: 0 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    border: 1px solid transparent;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.message-content .btn-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-main);
+}
+
+.message-content .btn-secondary:hover {
+    background: var(--bg-hover);
+}
+
+.message-content .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.message-content .btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+.message-content .btn-danger {
+    background: var(--danger);
+    color: #ffffff;
+}
+
+.message-content .btn-danger:hover {
+    background: var(--danger-hover);
+}

@@ -1,0 +1,204 @@
+.songs-panel.panel-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+.songs-panel .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.songs-panel .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.songs-panel .toolbar-search {
+    flex: 1;
+}
+
+.songs-panel .search-input {
+    width: 100%;
+    height: 36px;
+    background: var(--bg-header);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    padding: 0 12px;
+    outline: none;
+    font-size: 13px;
+}
+
+.songs-panel .search-input:focus {
+    border-color: var(--accent);
+}
+
+.songs-panel .toolbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.songs-panel .btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.songs-panel .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.songs-panel .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.songs-panel .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.songs-panel .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-main);
+}
+
+.songs-panel .btn-outline:hover:not(:disabled) {
+    background: var(--bg-hover);
+}
+
+.songs-panel .btn-outline-danger {
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.songs-panel .btn-outline-danger:hover:not(:disabled) {
+    background: var(--danger-bg);
+}
+
+.songs-panel .table-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.songs-panel .songs-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.songs-panel .songs-table th {
+    background: var(--bg-header);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 12px;
+    text-align: left;
+    padding: 8px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+}
+
+.songs-panel .col-play {
+    width: 48px;
+    text-align: center !important;
+    padding: 0 !important;
+}
+
+.songs-panel .col-name {
+    width: 45%;
+    padding: 0 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.songs-panel .col-tags {
+    width: 55%;
+    padding: 0 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.songs-panel .table-row {
+    height: 34px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: default;
+    transition: background-color 0.1s ease;
+}
+
+.songs-panel .table-row:hover:not(.row-selected) {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.songs-panel .row-selected {
+    background: var(--selection) !important;
+    color: #ffffff !important;
+}
+
+.songs-panel .empty-cell {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+.songs-panel .play-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 13px;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+}
+
+.songs-panel .table-row.row-selected .play-btn {
+    color: #ffffff;
+}
+
+.songs-panel .play-btn:hover {
+    background: rgba(61, 127, 224, 0.2);
+    transform: scale(1.15);
+}
+
+.songs-panel .footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+}
+
+.songs-panel .stats-text {
+    font-size: 12px;
+    color: var(--text-muted);
+}

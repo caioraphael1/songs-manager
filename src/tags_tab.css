@@ -1,0 +1,128 @@
+.tags-panel.panel-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+.tags-panel .toolbar {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tags-panel .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tags-panel .btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.tags-panel .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tags-panel .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.tags-panel .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.tags-panel .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-main);
+}
+
+.tags-panel .btn-outline:hover:not(:disabled) {
+    background: var(--bg-hover);
+}
+
+.tags-panel .btn-outline-danger {
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.tags-panel .btn-outline-danger:hover:not(:disabled) {
+    background: var(--danger-bg);
+}
+
+.tags-panel .table-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 48px;
+}
+
+.tags-panel .tags-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tags-panel .table-row {
+    height: 34px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: default;
+    transition: background-color 0.1s ease;
+}
+
+.tags-panel .table-row:hover:not(.row-selected) {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tags-panel .row-selected {
+    background: var(--selection) !important;
+    color: #ffffff !important;
+}
+
+.tags-panel .col-tag {
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 34px;
+}
+
+.tags-panel .tag-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.tags-panel .tag-count {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.tags-panel .row-selected .tag-count {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.tags-panel .empty-cell {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}
