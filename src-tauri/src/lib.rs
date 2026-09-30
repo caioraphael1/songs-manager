@@ -361,7 +361,7 @@ fn songs_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String>
     let tx = conn.transaction().map_err(|e| e.to_string())?;
     for id in ids {
         tx.execute("DELETE FROM musicas WHERE id = ?", params![id])
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| format!("Failed to delete song {id}: {e}"))?;
     }
     tx.commit().map_err(|e| e.to_string())?;
     Ok(())
