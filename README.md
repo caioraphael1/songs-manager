@@ -1,6 +1,6 @@
 # Songs Manager
 
-- Desktop app for managing songs with an SQL database
+- Desktop app for managing songs with an SQL database.
 - Can open songs in the browser and create temporary YouTube playlists.
 - Query the database with the search bar, or use an advanced query with the `tag:` keyword.
 
