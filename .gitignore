@@ -1,5 +1,7 @@
 .DS_Store
 
+.kopiaignore
+
 # Builds
 /builds/
 
