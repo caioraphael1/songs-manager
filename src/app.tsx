@@ -116,8 +116,8 @@ if (root) {
             }
         }
 
-        async function handle_open_database_dialog() {
-            const picked = await api.pick_db_file();
+        async function db_open_dialog() {
+            const picked = await api.db_pick_path_dialog();
             if (picked) {
                 await db_connect(picked);
             }
@@ -220,11 +220,11 @@ if (root) {
 
         solid.onMount(async () => {
             try {
-                const default_path = await api.default_db_path_get();
+                const default_path = await api.db_get_automatic_path();
                 if (default_path) {
                     await db_connect(default_path);
                 } else {
-                    await handle_open_database_dialog();
+                    await db_open_dialog();
                 }
             } catch (err: unknown) {
                 console.error("Failed initializing the database:", err);
@@ -245,7 +245,7 @@ if (root) {
                     <button
                         type    = "button"
                         class   = "btn btn-outline"
-                        onClick = {handle_open_database_dialog}
+                        onClick = {db_open_dialog}
                     >
                         Open database...
                     </button>

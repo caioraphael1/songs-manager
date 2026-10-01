@@ -3,10 +3,9 @@
 
 - Database:
     - [ ] ! Button to create a new database from the schema.
-    - [ ] ! Try to open the last opened db, if doesn't exist, prompt with the file system.
     - [ ] ! The app no longer prompts the "file system opener" on launch.
-    - [ ] ! There's a "home screen" with just the option to create a new db or open an existing one.
-    - [ ] ! Button to 'close' the db and go back to the home screen.
+    - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
+    - [ ] Button to 'close' the db and go back to the home screen.
 - Utility:
     - [ ] Get random playlist with up to 50 songs.
     - [ ] `x` button in the search bar, to clear the search.
@@ -14,13 +13,14 @@
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
     - [ ] Consider adding videos.
 - Theme: 
-    - [ ] Use my site theme.
+    - [ ] ! Use my site theme.
 - Tags:
     - [ ] Instead of showing the tags in the 'Songs Tab' separated by comma, replace it by a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
 - Etc:
     - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.
-
+- Expansion:
+    - Tabs for Movies, Books, Mangá, Anime, Series, Videos.
 
 
 ## Design prototypes

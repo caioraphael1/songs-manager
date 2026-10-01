@@ -5,6 +5,12 @@ use std::sync::Mutex;
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use tauri::State;
+use tauri::{AppHandle, Manager};
+
+
+const USER_CACHE_FILE: &str = "user_cache.txt";
+
+
 
 const SCHEMA: &str = r#"
 CREATE TABLE IF NOT EXISTS musicas (
@@ -77,72 +83,72 @@ fn tag_get_id(conn: &Connection, name: &str) -> Result<Option<i64>, rusqlite::Er
 }
 
 
+fn user_cache_path_last_open_db(app: &AppHandle) -> Option<PathBuf> {
+    app.path().app_config_dir().ok().map(|d| d.join(USER_CACHE_FILE))
+}
+
+fn user_cache_path_last_open_db_set(app: &AppHandle, path: &str) -> Result<(), String> {
+    let file = user_cache_path_last_open_db(app).ok_or("no config dir")?;
+    if let Some(dir) = file.parent() {
+        std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
+    }
+    std::fs::write(file, path).map_err(|e| e.to_string())
+}
+
 #[tauri::command]
-fn default_db_path_get() -> Option<String> {
-    // 1. Check CLI args
+fn db_get_automatic_path(app: AppHandle) -> Option<String> {
+    // CLI args
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 && args[1].ends_with(".db") && Path::new(&args[1]).exists() {
         return Some(args[1].clone());
     }
 
-    // 2. Check current working directory
-    if let Ok(entries) = std::fs::read_dir(".") {
-        let mut dbs: Vec<PathBuf> = entries
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| p.extension().map_or(false, |ext| ext == "db"))
-            .collect();
-        dbs.sort();
-        if let Some(first) = dbs.first() {
-            return Some(first.to_string_lossy().to_string());
-        }
-    }
-
-    // 3. Check executable directory
-    if let Ok(exe) = std::env::current_exe() {
-        if let Some(parent) = exe.parent() {
-            if let Ok(entries) = std::fs::read_dir(parent) {
-                let mut dbs: Vec<PathBuf> = entries
-                    .filter_map(|e| e.ok())
-                    .map(|e| e.path())
-                    .filter(|p| p.extension().map_or(false, |ext| ext == "db"))
-                    .collect();
-                dbs.sort();
-                if let Some(first) = dbs.first() {
-                    return Some(first.to_string_lossy().to_string());
-                }
-            }
-        }
+    // Previously opened DB (if it still exists)
+    let file = user_cache_path_last_open_db(&app)?;
+    let saved = std::fs::read_to_string(file).ok()?;
+    let saved = saved.trim();
+    if !saved.is_empty() && Path::new(saved).exists() {
+        return Some(saved.to_string());
     }
 
     None
 }
 
 #[tauri::command]
-fn pick_db_file() -> Option<String> {
-    let file = rfd::FileDialog::new()
+fn db_pick_path_dialog() -> Option<String> {
+    rfd::FileDialog::new()
         .add_filter("SQLite", &["db", "sqlite", "sqlite3"])
         .set_title("Open a SQLite database")
-        .pick_file();
-
-    file.map(|p| p.to_string_lossy().to_string())
+        .pick_file()
+        .map(|p| p.to_string_lossy().to_string())
 }
 
 #[tauri::command]
-fn db_open(path: String, state: State<'_, AppState>) -> Result<String, String> {
+fn db_open(
+    app: AppHandle,
+    path: String,
+    state: State<'_, AppState>,
+    ) -> Result<String, String> {
     let conn = init_connection(&path)?;
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let mut path_guard = state.db_path.lock().map_err(|e| e.to_string())?;
     *db_guard = Some(conn);
     *path_guard = Some(path.clone());
+
+    // Failing to remember the path shouldn't fail the open
+    if let Err(e) = user_cache_path_last_open_db_set(&app, &path) {
+        eprintln!("could not save last db path: {e}");
+    }
+
     Ok(path)
 }
 
-#[tauri::command]
-fn get_active_db_path(state: State<'_, AppState>) -> Result<Option<String>, String> {
-    let path_guard = state.db_path.lock().map_err(|e| e.to_string())?;
-    Ok(path_guard.clone())
-}
+
+// #[tauri::command]
+// fn get_active_db_path(state: State<'_, AppState>) -> Result<Option<String>, String> {
+//     let path_guard = state.db_path.lock().map_err(|e| e.to_string())?;
+//     Ok(path_guard.clone())
+// }
 
 #[tauri::command]
 fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song_Query_Result, String> {
@@ -479,10 +485,10 @@ pub fn run() {
         })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            default_db_path_get,
-            pick_db_file,
+            db_get_automatic_path,
+            db_pick_path_dialog,
             db_open,
-            get_active_db_path,
+            // get_active_db_path,
             query_songs,
             song_create,
             song_update,

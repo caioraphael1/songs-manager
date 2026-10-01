@@ -41,6 +41,7 @@ bun run check:watch   # type-check in watch mode
 ```
 
 
+
 ## Build
 
 
@@ -59,6 +60,15 @@ bun run build
 bunx serve builds/web
 ```
 - Output: `builds/web`.
+
+
+
+## Persistent files
+
+- User cache is saved at:
+    - Linux   -> `~/.config/com.caioraphael.songsmanager/user_cache.txt`
+    - macOS   -> `~/Library/Application Support/com.caioraphael.songsmanager/user_cache.txt`
+    - Windows -> `%AppData%/Roaming/com.caioraphael.songsmanager/user_cache.txt`
 
 
 
