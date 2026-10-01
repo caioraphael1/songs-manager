@@ -1,18 +1,21 @@
 
 ## TODOs
 
-- QoL: 
+- Database:
+    - [ ] ! Button to create a new database from the schema.
     - [ ] ! Try to open the last opened db, if doesn't exist, prompt with the file system.
-    - [ ] ! Songs Tab load times are problematic.
+    - [ ] ! The app no longer prompts the "file system opener" on launch.
+    - [ ] ! There's a "home screen" with just the option to create a new db or open an existing one.
+    - [ ] ! Button to 'close' the db and go back to the home screen.
 - Utility:
-    - [ ] copy to clipboard function, getting all links separated by spaces.
-    - [ ] copy md to clipboard function, getting all links separated by spaces, with format `[]()`.
+    - [ ] Button to copy to clipboard, getting all links separated by spaces.
+    - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
 - Theme: 
     - [ ] Use my site theme.
 - Tags:
-    - [ ] Better tags selection for a song.
-    - [ ] Tags are shown as comma separated, but that's ugly.
+    - [ ] Instead of showing the tags in the 'Songs Tab' separated by comma, replace it by a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
 - Etc:
+    - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.
 
 
