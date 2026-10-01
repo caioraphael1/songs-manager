@@ -11,6 +11,10 @@ export async function db_pick_path_dialog(): Promise<string | null> {
     return await tauri_core.invoke<string | null>("db_pick_path_dialog");
 }
 
+export async function db_create_path_dialog(): Promise<string | null> {
+    return await tauri_core.invoke<string | null>("db_create_path_dialog");
+}
+
 export async function db_open(path: string): Promise<string> {
     return await tauri_core.invoke<string>("db_open", { path });
 }

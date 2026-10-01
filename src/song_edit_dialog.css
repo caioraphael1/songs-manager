@@ -1,30 +1,30 @@
 .song-edit-form.form-container {
-    display: flex;
+    display:        flex;
     flex-direction: column;
-    gap: 14px;
-    width: 420px;
+    gap:            14px;
+    width:          420px;
 }
 
 .song-edit-form .form-group {
-    display: flex;
+    display:        flex;
     flex-direction: column;
-    gap: 5px;
+    gap:            5px;
 }
 
 .song-edit-form label {
     font-size: 12px;
-    color: var(--text-muted);
+    color:     var(--text-muted);
 }
 
 .song-edit-form .input {
-    height: 36px;
-    background: var(--bg-header);
-    border: 1px solid var(--border);
+    height:        36px;
+    background:    var(--bg-header);
+    border:        1px solid var(--border);
     border-radius: var(--radius-sm);
-    color: var(--text-main);
-    padding: 0 10px;
-    outline: none;
-    transition: border-color 0.15s ease;
+    color:         var(--text-main);
+    padding:       0 10px;
+    outline:       none;
+    transition:    border-color 0.15s ease;
 }
 
 .song-edit-form .input:focus {
@@ -37,7 +37,7 @@
 
 .song-edit-form .tag-input-row {
     display: flex;
-    gap: 6px;
+    gap:     6px;
 }
 
 .song-edit-form .tag-input-row .input {
@@ -45,18 +45,18 @@
 }
 
 .song-edit-form .btn-add {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
+    width:           36px;
+    height:          36px;
+    font-size:       18px;
+    font-weight:     700;
+    display:         flex;
+    align-items:     center;
     justify-content: center;
-    background: var(--accent);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
+    background:      var(--accent);
+    color:           #ffffff;
+    border:          none;
+    border-radius:   var(--radius-sm);
+    cursor:          pointer;
 }
 
 .song-edit-form .btn-add:hover {
@@ -64,39 +64,39 @@
 }
 
 .song-edit-form .tags-box {
-    min-height: 90px;
-    max-height: 140px;
-    overflow-y: auto;
-    background: var(--bg-header);
-    border: 1px solid var(--border);
+    min-height:    90px;
+    max-height:    140px;
+    overflow-y:    auto;
+    background:    var(--bg-header);
+    border:        1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 8px;
+    padding:       8px;
 }
 
 .song-edit-form .no-tags {
-    color: var(--text-muted);
-    font-size: 12px;
-    text-align: center;
+    color:       var(--text-muted);
+    font-size:   12px;
+    text-align:  center;
     padding-top: 30px;
 }
 
 .song-edit-form .tags-list {
-    display: flex;
+    display:   flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap:       6px;
 }
 
 .song-edit-form .tag-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 3px 8px;
+    display:       inline-flex;
+    align-items:   center;
+    gap:           6px;
+    background:    var(--bg-card);
+    border:        1px solid var(--border);
+    padding:       3px 8px;
     border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    user-select: none;
+    font-size:     12px;
+    cursor:        pointer;
+    user-select:   none;
 }
 
 .song-edit-form .tag-item:hover {
@@ -104,20 +104,20 @@
 }
 
 .song-edit-form .tag-selected {
-    background: var(--selection) !important;
-    color: #ffffff !important;
+    background:   var(--selection) !important;
+    color:        #ffffff !important;
     border-color: var(--selection) !important;
 }
 
 .song-edit-form .tag-remove-btn {
-    background: transparent;
-    border: none;
-    color: inherit;
-    font-size: 14px;
+    background:  transparent;
+    border:      none;
+    color:       inherit;
+    font-size:   14px;
     line-height: 1;
-    cursor: pointer;
-    opacity: 0.7;
-    padding: 0 2px;
+    cursor:      pointer;
+    opacity:     0.7;
+    padding:     0 2px;
 }
 
 .song-edit-form .tag-remove-btn:hover {
@@ -125,43 +125,43 @@
 }
 
 .song-edit-form .tag-actions-row {
-    display: flex;
+    display:    flex;
     margin-top: 2px;
 }
 
 .song-edit-form .btn-sm {
-    height: 26px;
+    height:    26px;
     font-size: 11px;
-    padding: 0 10px;
+    padding:   0 10px;
 }
 
 .song-edit-form .footer-actions {
-    display: flex;
+    display:         flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
+    gap:             10px;
+    margin-top:      10px;
 }
 
 .song-edit-form .btn {
-    height: 36px;
-    padding: 0 20px;
+    height:        36px;
+    padding:       0 20px;
     border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 13px;
-    border: 1px solid transparent;
-    transition: background-color 0.15s ease;
+    cursor:        pointer;
+    font-weight:   500;
+    font-size:     13px;
+    border:        1px solid transparent;
+    transition:    background-color 0.15s ease;
 }
 
 .song-edit-form .btn:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor:  not-allowed;
 }
 
 .song-edit-form .btn-secondary {
-    background: transparent;
+    background:   transparent;
     border-color: var(--border);
-    color: var(--text-main);
+    color:        var(--text-main);
 }
 
 .song-edit-form .btn-secondary:hover:not(:disabled) {
@@ -170,7 +170,7 @@
 
 .song-edit-form .btn-primary {
     background: var(--accent);
-    color: #ffffff;
+    color:      #ffffff;
 }
 
 .song-edit-form .btn-primary:hover {

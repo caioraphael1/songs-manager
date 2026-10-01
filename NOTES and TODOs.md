@@ -2,8 +2,6 @@
 ## TODOs
 
 - Database:
-    - [ ] ! Button to create a new database from the schema.
-    - [ ] ! The app no longer prompts the "file system opener" on launch.
     - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
     - [ ] Button to 'close' the db and go back to the home screen.
 - Utility:

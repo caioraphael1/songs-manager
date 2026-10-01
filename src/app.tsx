@@ -123,6 +123,13 @@ if (root) {
             }
         }
 
+        async function db_create_dialog() {
+            const created = await api.db_create_path_dialog();
+            if (created) {
+                await db_connect(created);
+            }
+        }
+
         function handle_search_change(query: string) {
             search_query_set(query);
             songs_reload(query);
@@ -223,8 +230,6 @@ if (root) {
                 const default_path = await api.db_get_automatic_path();
                 if (default_path) {
                     await db_connect(default_path);
-                } else {
-                    await db_open_dialog();
                 }
             } catch (err: unknown) {
                 console.error("Failed initializing the database:", err);
@@ -242,14 +247,23 @@ if (root) {
                             🎵 {db_path() || "Songs Manager - No database"}
                         </span>
                     </div>
-                    <button
-                        type    = "button"
-                        class   = "btn btn-outline"
-                        onClick = {db_open_dialog}
-                    >
-                        Open database...
-                    </button>
-                </header>
+                    <div class="top-bar-actions">
+                        <button
+                            type    = "button"
+                            class   = "btn btn-outline"
+                            onClick = {db_create_dialog}
+                        >
+                            Create new database
+                        </button>
+                        <button
+                            type    = "button"
+                            class   = "btn btn-outline"
+                            onClick = {db_open_dialog}
+                        >
+                            Open existing database
+                        </button>
+                    </div>
+                </header>              
 
                 {/* Navigation Tabs Bar */}
                 <nav class="tabs-bar">

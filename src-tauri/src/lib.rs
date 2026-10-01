@@ -11,7 +11,6 @@ use tauri::{AppHandle, Manager};
 const USER_CACHE_FILE: &str = "user_cache.txt";
 
 
-
 const SCHEMA: &str = r#"
 CREATE TABLE IF NOT EXISTS musicas (
     id INTEGER PRIMARY KEY,
@@ -30,6 +29,7 @@ CREATE TABLE IF NOT EXISTS musicas_tags (
     FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
 "#;
+
 
 pub struct AppState {
     pub db:      Mutex<Option<Connection>>,
@@ -64,12 +64,6 @@ pub struct Search_Filter {
     pub excluded_tags:       Vec<String>,
 }
 
-fn init_connection(path: &str) -> Result<Connection, String> {
-    let conn = Connection::open(path).map_err(|e| format!("Failed to open the database: {}", e))?;
-    conn.execute_batch("PRAGMA foreign_keys = ON;").map_err(|e| format!("PRAGMA Error: {}", e))?;
-    conn.execute_batch(SCHEMA).map_err(|e| format!("Failed to create tables: {}", e))?;
-    Ok(conn)
-}
 
 fn tag_get_id(conn: &Connection, name: &str) -> Result<Option<i64>, rusqlite::Error> {
     let name_trimmed = name.trim();
@@ -124,12 +118,38 @@ fn db_pick_path_dialog() -> Option<String> {
 }
 
 #[tauri::command]
+fn db_create_path_dialog() -> Option<String> {
+    let mut path = rfd::FileDialog::new()
+        .add_filter("SQLite", &["db", "sqlite", "sqlite3"])
+        .set_title("Create a new SQLite database")
+        .set_file_name("untitled_database.db")
+        .save_file()?;
+
+    // Some platforms don't append the extension automatically
+    if path.extension().is_none() {
+        path.set_extension("db");
+    }
+
+    Some(path.to_string_lossy().to_string())
+}
+
+
+fn db_init_connection(path: &str) -> Result<Connection, String> {
+    let conn = Connection::open(path).map_err(|e| format!("Failed to open the database: {}", e))?;
+        // Opens the file if it exists. If the file doesn't exist, SQLite creates an empty one.
+        // Only fails if missing permissions, etc.
+    conn.execute_batch("PRAGMA foreign_keys = ON;").map_err(|e| format!("PRAGMA Error: {}", e))?;
+    conn.execute_batch(SCHEMA).map_err(|e| format!("Failed to create tables: {}", e))?;
+    Ok(conn)
+}
+
+#[tauri::command]
 fn db_open(
     app: AppHandle,
     path: String,
     state: State<'_, AppState>,
     ) -> Result<String, String> {
-    let conn = init_connection(&path)?;
+    let conn = db_init_connection(&path)?;
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let mut path_guard = state.db_path.lock().map_err(|e| e.to_string())?;
     *db_guard = Some(conn);
@@ -487,6 +507,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             db_get_automatic_path,
             db_pick_path_dialog,
+            db_create_path_dialog,
             db_open,
             // get_active_db_path,
             query_songs,
