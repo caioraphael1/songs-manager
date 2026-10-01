@@ -17,8 +17,8 @@
         "verbatimModuleSyntax":         true,
 
         "noUncheckedIndexedAccess":     true, // When indexing something (a[0]), the return is 'T | undefined'.
-        "noUnusedLocals":               true,
-        "noUnusedParameters":           true,
+        "noUnusedLocals":               false,
+        "noUnusedParameters":           false,
         "noFallthroughCasesInSwitch":   true,
 
         // "allowSyntheticDefaultImports": true,

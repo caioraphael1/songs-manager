@@ -10,13 +10,13 @@ interface Tag_Edit_Dialog_Properties {
 
 export function Tag_Edit_Dialog(properties: Tag_Edit_Dialog_Properties) {
     let input_ref: HTMLInputElement | undefined;
-    const [tag_name, set_tag_name]   = solid.createSignal(properties.current_name);
-    const [has_error, set_has_error] = solid.createSignal(false);
+    const [tag_name,  tag_name_set]  = solid.createSignal(properties.current_name);
+    const [has_error, has_error_set] = solid.createSignal(false);
 
     function handle_submit() {
         const trimmed = tag_name().trim();
         if (!trimmed || trimmed.includes(",")) {
-            set_has_error(true);
+            has_error_set(true);
             return;
         }
         properties.on_save(trimmed);
@@ -40,12 +40,12 @@ export function Tag_Edit_Dialog(properties: Tag_Edit_Dialog_Properties) {
 
     return (
         <dialog.Dialog
-            title    = "Editar tag"
+            title    = "Edit tag"
             on_close = {properties.on_cancel}
         >
             <div class="tag-dialog-form form-container">
                 <div class="form-group">
-                    <label for="edit-tag-name">Nome</label>
+                    <label for="edit-tag-name">Name</label>
                     <input
                         id          = "edit-tag-name"
                         ref         = {input_ref}
@@ -54,10 +54,10 @@ export function Tag_Edit_Dialog(properties: Tag_Edit_Dialog_Properties) {
                         classList   = {{ "input-error": has_error() }}
                         value       = {tag_name()}
                         onInput     = {(e) => {
-                            set_tag_name(e.currentTarget.value);
-                            set_has_error(false);
+                            tag_name_set(e.currentTarget.value);
+                            has_error_set(false);
                         }}
-                        placeholder = "Nome da tag"
+                        placeholder = "Name"
                     />
                 </div>
 
@@ -67,14 +67,14 @@ export function Tag_Edit_Dialog(properties: Tag_Edit_Dialog_Properties) {
                         class   = "btn btn-secondary"
                         onClick = {properties.on_cancel}
                     >
-                        Cancelar
+                        Cancel
                     </button>
                     <button
                         type    = "button"
                         class   = "btn btn-primary"
                         onClick = {handle_submit}
                     >
-                        Atualizar
+                        Update
                     </button>
                 </div>
             </div>

@@ -20,21 +20,21 @@ const root = document.getElementById("root");
 if (root) {
     solid_web.render(() => {
         // State
-        const [active_tab, set_active_tab]                           = solid.createSignal<"songs" | "tags">("songs");
-        const [db_path, set_db_path]                                 = solid.createSignal<string>("");
-        const [songs, set_songs]                                     = solid.createSignal<types.Song[]>([]);
-        const [total_songs_count, set_total_songs_count]             = solid.createSignal<number>(0);
+        const [active_tab, active_tab_set]                           = solid.createSignal<"songs" | "tags">("songs");
+        const [db_path, db_path_set]                                 = solid.createSignal<string>("");
+        const [songs, songs_set]                                     = solid.createSignal<types.Song[]>([]);
+        const [total_songs_count, total_songs_count_set]             = solid.createSignal<number>(0);
         const [tags, set_tags]                                       = solid.createSignal<types.Tag[]>([]);
-        const [search_query, set_search_query]                       = solid.createSignal<string>("");
+        const [search_query, search_query_set]                       = solid.createSignal<string>("");
 
         // Dialog state
-        const [is_new_song_dialog_open, set_is_new_song_dialog_open] = solid.createSignal(false);
-        const [editing_song, set_editing_song]                       = solid.createSignal<types.Song | null>(null);
-        const [is_new_tag_dialog_open, set_is_new_tag_dialog_open]   = solid.createSignal(false);
-        const [editing_tag, set_editing_tag]                         = solid.createSignal<types.Tag | null>(null);
+        const [is_new_song_dialog_open, is_new_song_dialog_open_set] = solid.createSignal(false);
+        const [editing_song, editing_song_set]                       = solid.createSignal<types.Song | null>(null);
+        const [is_new_tag_dialog_open, is_new_tag_dialog_open_set]   = solid.createSignal(false);
+        const [editing_tag, editing_tag_set]                         = solid.createSignal<types.Tag | null>(null);
 
         // Msg Dialog state
-        const [msg_dialog_state, msg_set_dialog_state] = solid.createSignal<{
+        const [msg_dialog_state, msg_dialog_state_set] = solid.createSignal<{
             open:        boolean;
             title:       string;
             message:     string;
@@ -48,13 +48,13 @@ if (root) {
         });
 
         function msg_show(title: string, message: string) {
-            msg_set_dialog_state({
+            msg_dialog_state_set({
                 open:       true,
                 title:      title,
                 message:    message,
                 confirm:    false,
                 on_confirm: () => {
-                    msg_set_dialog_state((prev) => ({ ...prev, open: false }));
+                    msg_dialog_state_set((prev) => ({ ...prev, open: false }));
                 },
             });
         }
@@ -65,14 +65,14 @@ if (root) {
             danger:     boolean,
             on_confirm: () => void,
             ) {
-            msg_set_dialog_state({
+            msg_dialog_state_set({
                 open:    true,
                 title:   title,
                 message: message,
                 confirm: true,
                 danger:  danger,
                 on_confirm: () => {
-                    msg_set_dialog_state((prev) => ({ ...prev, open: false }));
+                    msg_dialog_state_set((prev) => ({ ...prev, open: false }));
                     on_confirm();
                 },
             });
@@ -85,10 +85,10 @@ if (root) {
                 const q = custom_query !== undefined ? custom_query : search_query();
                 const filter = search.parse_search(q);
                 const res = await api.query_songs(filter);
-                set_songs(res.songs);
-                set_total_songs_count(res.total_count);
+                songs_set(res.songs);
+                total_songs_count_set(res.total_count);
             } catch (err: unknown) {
-                console.error("Erro ao carregar músicas:", err);
+                console.error("Failed loading songs:", err);
             }
         }
 
@@ -98,7 +98,7 @@ if (root) {
                 const queried = await api.tags_query();
                 set_tags(queried);
             } catch (err: unknown) {
-                console.error("Erro ao carregar tags:", err);
+                console.error("Failed loading the tags:", err);
             }
         }
 
@@ -109,10 +109,10 @@ if (root) {
         async function db_connect(target_path: string) {
             try {
                 const opened = await api.db_open(target_path);
-                set_db_path(opened);
+                db_path_set(opened);
                 await reload_all();
             } catch (err: unknown) {
-                msg_show("Erro", `Não foi possível abrir o banco:\n${err}`);
+                msg_show("Error", `Failed opening the database:\n${err}`);
             }
         }
 
@@ -124,7 +124,7 @@ if (root) {
         }
 
         function handle_search_change(query: string) {
-            set_search_query(query);
+            search_query_set(query);
             songs_reload(query);
         }
 
@@ -136,42 +136,43 @@ if (root) {
             ) {
             try {
                 await api.song_create(name, link, song_tags);
-                set_is_new_song_dialog_open(false);
-                set_search_query("");
+                is_new_song_dialog_open_set(false);
+                search_query_set("");
                 await reload_all();
             } catch (err: unknown) {
-                msg_show("Já existe", `${err}`);
+                msg_show("Already exists", `${err}`);
             }
         }
 
-        async function handle_song_update(
+        async function song_update(
             name:      string,
             link:      string | null,
             song_tags: string[],
             ) {
             const current_song = editing_song();
-            if (!current_song) return;
+            if (!current_song) 
+                return;
             try {
                 await api.song_update(current_song.id, name, link, song_tags);
-                set_editing_song(null);
+                editing_song_set(null);
                 await reload_all();
             } catch (err: unknown) {
-                msg_show("Já existe", `${err}`);
+                msg_show("Already exists", `${err}`);
             }
         }
 
         function handle_songs_delete(ids: number[]) {
             if (ids.length === 0) return;
             confirm_show(
-                "Excluir música(s)",
-                `Excluir ${ids.length} música(s)? Essa ação não pode ser desfeita.`,
+                "Delete song(s)",
+                `Delete ${ids.length} song(s)? This action cannot be undone.`,
                 true,
                 async () => {
                     try {
                         await api.songs_delete(ids);
                         await reload_all();
                     } catch (err: unknown) {
-                        msg_show("Erro", `Erro ao excluir músicas:\n${err}`);
+                        msg_show("Error", `Error when deleting a song:\n${err}`);
                     }
                 },
             );
@@ -181,10 +182,10 @@ if (root) {
         async function handle_tags_create(names: string[]) {
             try {
                 await api.tags_create(names);
-                set_is_new_tag_dialog_open(false);
+                is_new_tag_dialog_open_set(false);
                 await tags_reload();
             } catch (err: unknown) {
-                msg_show("Erro", `Erro ao criar tags:\n${err}`);
+                msg_show("Error", `Error when creating tags:\n${err}`);
             }
         }
 
@@ -193,25 +194,25 @@ if (root) {
             if (!current_tag) return;
             try {
                 await api.tag_update(current_tag.id, newName);
-                set_editing_tag(null);
+                editing_tag_set(null);
                 await reload_all();
             } catch (err: unknown) {
-                msg_show("Já existe", `${err}`);
+                msg_show("Already exists", `${err}`);
             }
         }
 
         function handle_tags_delete(ids: number[]) {
             if (ids.length === 0) return;
             confirm_show(
-                "Excluir tag(s)",
-                `Excluir ${ids.length} tag(s) do banco? Elas serão removidas de todas as músicas.`,
+                "Delete tag(s)",
+                `Delete ${ids.length} tag(s) from the database? They will be removed from all songs.`,
                 true,
                 async () => {
                     try {
                         await api.tags_delete(ids);
                         await reload_all();
                     } catch (err: unknown) {
-                        msg_show("Erro", `Erro ao excluir tags:\n${err}`);
+                        msg_show("Error", `Error when deleting the tags:\n${err}`);
                     }
                 },
             );
@@ -226,7 +227,7 @@ if (root) {
                     await handle_open_database_dialog();
                 }
             } catch (err: unknown) {
-                console.error("Falha na inicialização do banco:", err);
+                console.error("Failed initializing the database:", err);
             }
         });
 
@@ -238,7 +239,7 @@ if (root) {
                 <header class="top-bar">
                     <div class="db-title-container">
                         <span class="db-title">
-                            🎵 {db_path() || "Gerenciador de Músicas - Sem database"}
+                            🎵 {db_path() || "Songs Manager - No database"}
                         </span>
                     </div>
                     <button
@@ -246,7 +247,7 @@ if (root) {
                         class   = "btn btn-outline"
                         onClick = {handle_open_database_dialog}
                     >
-                        Abrir database...
+                        Open database...
                     </button>
                 </header>
 
@@ -256,7 +257,7 @@ if (root) {
                         type      = "button"
                         class     = "tab-btn"
                         classList = {{ "tab-active": active_tab() === "songs" }}
-                        onClick   = {() => set_active_tab("songs")}
+                        onClick   = {() => active_tab_set("songs")}
                     >
                         Songs
                     </button>
@@ -264,7 +265,7 @@ if (root) {
                         type      = "button"
                         class     = "tab-btn"
                         classList = {{ "tab-active": active_tab() === "tags" }}
-                        onClick   = {() => set_active_tab("tags")}
+                        onClick   = {() => active_tab_set("tags")}
                     >
                         Tags
                     </button>
@@ -277,8 +278,8 @@ if (root) {
                         fallback={
                             <tags_tab.Tags_Tab
                                 tags           = {tags()}
-                                on_tag_new     = {() => set_is_new_tag_dialog_open(true)}
-                                on_tag_edit    = {(tag) => set_editing_tag(tag)}
+                                on_tag_new     = {() => is_new_tag_dialog_open_set(true)}
+                                on_tag_edit    = {(tag) => editing_tag_set(tag)}
                                 on_tags_delete = {handle_tags_delete}
                             />
                         }
@@ -288,8 +289,8 @@ if (root) {
                             total_count      = {total_songs_count()}
                             search_query     = {search_query()}
                             on_search_change = {handle_search_change}
-                            on_song_new      = {() => set_is_new_song_dialog_open(true)}
-                            on_song_edit     = {(song) => set_editing_song(song)}
+                            on_song_new      = {() => is_new_song_dialog_open_set(true)}
+                            on_song_edit     = {(song) => editing_song_set(song)}
                             on_songs_delete  = {handle_songs_delete}
                         />
                     </solid.Show>
@@ -298,17 +299,17 @@ if (root) {
                 {/* Dialogs */}
                 <solid.Show when={is_new_song_dialog_open()}>
                     <song_edit_dialog.Song_Edit_Dialog
-                        title          = "Nova música"
+                        title          = "New song"
                         available_tags = {available_tag_names()}
                         on_save        = {handle_save_new_song}
-                        on_cancel      = {() => set_is_new_song_dialog_open(false)}
+                        on_cancel      = {() => is_new_song_dialog_open_set(false)}
                     />
                 </solid.Show>
 
                 <solid.Show when={editing_song()}>
                     {(song) => (
                         <song_edit_dialog.Song_Edit_Dialog
-                            title          = "Editar música"
+                            title          = "Edit song"
                             initial_name   = {song().nome}
                             initial_link   = {song().link}
                             initial_tags   = {
@@ -319,8 +320,8 @@ if (root) {
                                     : []
                             }
                             available_tags = {available_tag_names()}
-                            on_save        = {handle_song_update}
-                            on_cancel      = {() => set_editing_song(null)}
+                            on_save        = {song_update}
+                            on_cancel      = {() => editing_song_set(null)}
                         />
                     )}
                 </solid.Show>
@@ -328,7 +329,7 @@ if (root) {
                 <solid.Show when={is_new_tag_dialog_open()}>
                     <tag_new_dialog.Tag_New_Dialog
                         on_save   = {handle_tags_create}
-                        on_cancel = {() => set_is_new_tag_dialog_open(false)}
+                        on_cancel = {() => is_new_tag_dialog_open_set(false)}
                     />
                 </solid.Show>
 
@@ -337,7 +338,7 @@ if (root) {
                         <tag_edit_dialog.Tag_Edit_Dialog
                             current_name = {tag().nome}
                             on_save      = {handle_tag_update}
-                            on_cancel    = {() => set_editing_tag(null)}
+                            on_cancel    = {() => editing_tag_set(null)}
                         />
                     )}
                 </solid.Show>
@@ -350,7 +351,7 @@ if (root) {
                         danger     = {msg_dialog_state().danger}
                         on_confirm = {() => msg_dialog_state().on_confirm?.()}
                         on_cancel  = {() =>
-                            msg_set_dialog_state((prev) => ({
+                            msg_dialog_state_set((prev) => ({
                                 ...prev,
                                 open: false,
                             }))

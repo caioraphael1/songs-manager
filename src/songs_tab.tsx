@@ -15,10 +15,8 @@ interface Songs_Tab_Properties {
 }
 
 export function Songs_Tab(properties: Songs_Tab_Properties) {
-    const [selected_ids, set_selected_ids] = solid.createSignal<number[]>([]);
-    const [last_selected_index, set_last_selected_index] = solid.createSignal<
-        number | null
-    >(null);
+    const [selected_ids,        selected_ids_set]        = solid.createSignal<number[]>([]);
+    const [last_selected_index, last_selected_index_set] = solid.createSignal<number | null>(null);
 
     const selected_songs = solid.createMemo(() =>
         properties.songs.filter((s) => selected_ids().includes(s.id)),
@@ -37,17 +35,17 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
             const end       = Math.max(last_idx, index);
             const range_ids = properties.songs.slice(start, end + 1).map((s) => s.id);
             const combined  = new Set([...selected_ids(), ...range_ids]);
-            set_selected_ids(Array.from(combined));
+            selected_ids_set(Array.from(combined));
         } else if (e.ctrlKey || e.metaKey) {
             if (selected_ids().includes(song.id)) {
-                set_selected_ids(selected_ids().filter((id) => id !== song.id));
+                selected_ids_set(selected_ids().filter((id) => id !== song.id));
             } else {
-                set_selected_ids([...selected_ids(), song.id]);
+                selected_ids_set([...selected_ids(), song.id]);
             }
-            set_last_selected_index(index);
+            last_selected_index_set(index);
         } else {
-            set_selected_ids([song.id]);
-            set_last_selected_index(index);
+            selected_ids_set([song.id]);
+            last_selected_index_set(index);
         }
     }
 
@@ -118,7 +116,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         class   = "btn btn-primary"
                         onClick = {properties.on_song_new}
                     >
-                        ＋ Nova música
+                        ＋ New song
                     </button>
                     <button
                         type     = "button"
@@ -126,7 +124,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         disabled = {selected_ids().length !== 1}
                         onClick  = {handle_edit_click}
                     >
-                        Editar
+                        Edit
                     </button>
                     <button
                         type     = "button"
@@ -134,7 +132,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         disabled = {selected_ids().length === 0}
                         onClick  = {handle_delete_click}
                     >
-                        Excluir
+                        Delete
                     </button>
                 </div>
 
@@ -142,7 +140,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                     <input
                         type        = "text"
                         class       = "search-input"
-                        placeholder = "🔍  Buscas ou query via 'tag:'"
+                        placeholder = "🔍  Search or query via 'tag:'"
                         value       = {properties.search_query}
                         onInput     = {(e) =>
                             properties.on_search_change(e.currentTarget.value)
@@ -158,8 +156,8 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         onClick  = {handle_create_you_tube_playlist}
                         title    = {
                             youtube_video_ids().length === 0
-                                ? "Selecione músicas com links do YouTube"
-                                : `Criar playlist com ${youtube_video_ids().length} vídeo(s)`
+                                ? "Select songs with Youtube URLs"
+                                : `Create playlist with ${youtube_video_ids().length} video(s)`
                         }
                     >
                         Create YouTube Playlist
@@ -173,7 +171,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                     <thead>
                         <tr>
                             <th class="col-play"></th>
-                            <th class="col-name">Música</th>
+                            <th class="col-name">Songs</th>
                             <th class="col-tags">Tags</th>
                         </tr>
                     </thead>
@@ -184,7 +182,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                                     colspan = "3"
                                     class   = "empty-cell"
                                 >
-                                    Nenhuma música encontrada
+                                    No songs found
                                 </td>
                             </tr>
                         ) : (
@@ -208,7 +206,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                                                 <button
                                                     type    = "button"
                                                     class   = "play-btn"
-                                                    title   = {`Abrir link: ${song.link}`}
+                                                    title   = {`Open link: ${song.link}`}
                                                     onClick = {(e) =>
                                                         handle_play_click(
                                                             song.link,
@@ -233,8 +231,8 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
             {/* Footer */}
             <div class="footer">
                 <span class="stats-text">
-                    Exibindo {properties.songs.length} de {properties.total_count}{" "}
-                    música(s)
+                    Showing {properties.songs.length} of {properties.total_count}{" "}
+                    song(s)
                 </span>
             </div>
         </div>

@@ -12,8 +12,8 @@ interface Tags_Tab_Properties {
 }
 
 export function Tags_Tab(properties: Tags_Tab_Properties) {
-    const [selected_ids, set_selected_ids] = solid.createSignal<number[]>([]);
-    const [last_selected_index, set_last_selected_index] = solid.createSignal<number | null>(null);
+    const [selected_ids,        selected_ids_set]        = solid.createSignal<number[]>([]);
+    const [last_selected_index, last_selected_index_set] = solid.createSignal<number | null>(null);
 
     const selected_tags = solid.createMemo(() =>
         properties.tags.filter((t) => selected_ids().includes(t.id)),
@@ -26,17 +26,17 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
             const end       = Math.max(last_idx, index);
             const range_ids = properties.tags.slice(start, end + 1).map((t) => t.id);
             const combined  = new Set([...selected_ids(), ...range_ids]);
-            set_selected_ids(Array.from(combined));
+            selected_ids_set(Array.from(combined));
         } else if (event.ctrlKey || event.metaKey) {
             if (selected_ids().includes(tag.id)) {
-                set_selected_ids(selected_ids().filter((id) => id !== tag.id));
+                selected_ids_set(selected_ids().filter((id) => id !== tag.id));
             } else {
-                set_selected_ids([...selected_ids(), tag.id]);
+                selected_ids_set([...selected_ids(), tag.id]);
             }
-            set_last_selected_index(index);
+            last_selected_index_set(index);
         } else {
-            set_selected_ids([tag.id]);
-            set_last_selected_index(index);
+            selected_ids_set([tag.id]);
+            last_selected_index_set(index);
         }
     }
 
@@ -89,7 +89,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                         class   = "btn btn-primary"
                         onClick = {properties.on_tag_new}
                     >
-                        ＋ Nova tag
+                        ＋ New tag
                     </button>
                     <button
                         type     = "button"
@@ -97,7 +97,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                         disabled = {selected_ids().length !== 1}
                         onClick  = {handle_edit_click}
                     >
-                        Editar
+                        Edit
                     </button>
                     <button
                         type     = "button"
@@ -105,7 +105,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                         disabled = {selected_ids().length === 0}
                         onClick  = {handle_delete_click}
                     >
-                        Excluir
+                        Delete
                     </button>
                 </div>
             </div>
@@ -117,7 +117,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                         {properties.tags.length === 0 ? (
                             <tr>
                                 <td class="empty-cell">
-                                    Nenhuma tag cadastrada
+                                    No tag registered
                                 </td>
                             </tr>
                         ) : (

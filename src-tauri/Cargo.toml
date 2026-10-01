@@ -1,28 +1,28 @@
 [package]
-name = "app_musicas"
-version = "0.1.0"
+name        = "app_musicas"
+version     = "0.1.0"
 description = "Gerenciador de Músicas"
-authors = ["Caio"]
-edition = "2021"
+authors     = ["Caio"]
+edition     = "2021"
 
 [lib]
-name = "app_musicas_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+name       = "app_musicas_lib"
+crate-type = ["rlib"] # "staticlib", "cdylib" are needed for mobile targets
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri               = { version = "2", features = [] }
 tauri-plugin-opener = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-rusqlite = { version = "0.32", features = ["bundled"] }
-rfd = "0.15"
+serde               = { version = "1", features = ["derive"] }
+serde_json          = "1"
+rusqlite            = { version = "0.32", features = ["bundled"] }
+rfd                 = "0.15"
 
 [profile.release]
-codegen-units = 1
-lto = true
-opt-level = 3
-panic = "abort"
-strip = true
+codegen-units = 16
+lto           = "thin"
+opt-level     = 3
+panic         = "abort"
+strip         = true

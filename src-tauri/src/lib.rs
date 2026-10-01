@@ -26,13 +26,13 @@ CREATE TABLE IF NOT EXISTS musicas_tags (
 "#;
 
 pub struct AppState {
-    pub db: Mutex<Option<Connection>>,
+    pub db:      Mutex<Option<Connection>>,
     pub db_path: Mutex<Option<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SongRecord {
-    pub id: i64,
+    pub id:   i64,
     pub nome: String,
     pub tags: String,
     pub link: Option<String>,
@@ -40,22 +40,22 @@ pub struct SongRecord {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Song_Query_Result {
-    pub songs: Vec<SongRecord>,
+    pub songs:       Vec<SongRecord>,
     pub total_count: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct TagRecord {
-    pub id: i64,
-    pub nome: String,
+    pub id:    i64,
+    pub nome:  String,
     pub count: i64,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Search_Filter {
-    pub free_text: String,
+    pub free_text:           String,
     pub included_tag_groups: Vec<Vec<String>>,
-    pub excluded_tags: Vec<String>,
+    pub excluded_tags:       Vec<String>,
 }
 
 fn init_connection(path: &str) -> Result<Connection, String> {
@@ -65,16 +65,17 @@ fn init_connection(path: &str) -> Result<Connection, String> {
     Ok(conn)
 }
 
-fn get_or_create_tag(conn: &Connection, name: &str) -> Result<i64, rusqlite::Error> {
+fn tag_get_id(conn: &Connection, name: &str) -> Result<Option<i64>, rusqlite::Error> {
     let name_trimmed = name.trim();
     let mut stmt = conn.prepare("SELECT id FROM tags WHERE nome = ? COLLATE NOCASE")?;
     let mut rows = stmt.query(params![name_trimmed])?;
-    if let Some(row) = rows.next()? {
-        return row.get(0);
+
+    match rows.next()? {
+        Some(row) => Ok(Some(row.get(0)?)),
+        None      => Ok(None),
     }
-    conn.execute("INSERT INTO tags (nome) VALUES (?)", params![name_trimmed])?;
-    Ok(conn.last_insert_rowid())
 }
+
 
 #[tauri::command]
 fn default_db_path_get() -> Option<String> {
@@ -228,9 +229,9 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
 
 #[tauri::command]
 fn song_create(
-    nome: String,
-    link: Option<String>,
-    tags: Vec<String>,
+    nome:  String,
+    link:  Option<String>,
+    tags:  Vec<String>,
     state: State<'_, AppState>,
     ) -> Result<i64, String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
@@ -263,7 +264,11 @@ fn song_create(
     let song_id = tx.last_insert_rowid();
 
     for tag in tags {
-        let tag_id = get_or_create_tag(&tx, &tag).map_err(|e| e.to_string())?;
+        let tag_id = match tag_get_id(&tx, &tag).map_err(|e| e.to_string())? {
+            Some(id) => id,
+            None => continue,
+                // This tag doesn't exist. Ignore it.
+        };
         tx.execute(
             "INSERT OR IGNORE INTO musicas_tags (musica_id, tag_id) VALUES (?, ?)",
             params![song_id, tag_id],
@@ -277,10 +282,10 @@ fn song_create(
 
 #[tauri::command]
 fn song_update(
-    id: i64,
-    nome: String,
-    link: Option<String>,
-    tags: Vec<String>,
+    id:    i64,
+    nome:  String,
+    link:  Option<String>,
+    tags:  Vec<String>,
     state: State<'_, AppState>,
     ) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
@@ -288,6 +293,7 @@ fn song_update(
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
 
+    // Name and link update
     let clean_link = link.and_then(|l| {
         let t = l.trim().to_string();
         if t.is_empty() {
@@ -296,7 +302,6 @@ fn song_update(
             Some(t)
         }
     });
-
     let res = tx.execute(
         "UPDATE musicas SET nome = ?, link = ? WHERE id = ?",
         params![nome.trim(), clean_link, id],
@@ -305,13 +310,13 @@ fn song_update(
     match res {
         Ok(_) => (),
         Err(rusqlite::Error::SqliteFailure(_, _)) => {
-            return Err("Já existe uma música com esse nome ou link.".to_string());
+            return Err("There's already a song with this name or link.".to_string());
         }
         Err(e) => return Err(e.to_string()),
     }
 
-    // Get current tags
-    let mut current_tags = Vec::new();
+    // Get current song tags
+    let mut current_song_tags = Vec::new();
     {
         let mut stmt = tx
             .prepare(
@@ -322,15 +327,16 @@ fn song_update(
             .query_map(params![id], |r| r.get::<_, String>(0))
             .map_err(|e| e.to_string())?;
         for r in rows {
-            current_tags.push(r.map_err(|e| e.to_string())?);
+            current_song_tags.push(r.map_err(|e| e.to_string())?);
         }
     }
 
-    let final_tags_trimmed: Vec<String> = tags.into_iter().map(|t| t.trim().to_string()).filter(|t| !t.is_empty()).collect();
+    let tags_from_update_trimmed: Vec<String> = tags.into_iter().map(|t| t.trim().to_string()).filter(|t| !t.is_empty()).collect();
 
     // Determine tags to remove
-    for cur in &current_tags {
-        if !final_tags_trimmed.iter().any(|f| f.eq_ignore_ascii_case(cur)) {
+    for cur in &current_song_tags {
+        // If not on the tags_from_update_trimmed, remove from current_song_tags.
+        if !tags_from_update_trimmed.iter().any(|f| f.eq_ignore_ascii_case(cur)) {
             tx.execute(
                 "DELETE FROM musicas_tags WHERE musica_id = ? AND tag_id = (SELECT id FROM tags WHERE nome = ? COLLATE NOCASE)",
                 params![id, cur],
@@ -339,9 +345,14 @@ fn song_update(
     }
 
     // Determine tags to add
-    for f in &final_tags_trimmed {
-        if !current_tags.iter().any(|c| c.eq_ignore_ascii_case(f)) {
-            let tag_id = get_or_create_tag(&tx, f).map_err(|e| e.to_string())?;
+    for f in &tags_from_update_trimmed {
+        // If not on the current_song_tags, add it to current_song_tags.
+        if !current_song_tags.iter().any(|c| c.eq_ignore_ascii_case(f)) {
+            let tag_id = match tag_get_id(&tx, f).map_err(|e| e.to_string())? {
+                Some(id) => id,
+                None => continue,
+                    // This tag doesn't exist. Ignore it.
+            };
             tx.execute(
                 "INSERT OR IGNORE INTO musicas_tags (musica_id, tag_id) VALUES (?, ?)",
                 params![id, tag_id],
@@ -408,7 +419,13 @@ fn tags_create(names: Vec<String>, state: State<'_, AppState>) -> Result<(), Str
     for n in names {
         let trimmed = n.trim();
         if !trimmed.is_empty() {
-            get_or_create_tag(&tx, trimmed).map_err(|e| e.to_string())?;
+            // Inserts if it doesn't exist.
+            tx.execute(
+                "INSERT INTO tags (nome)
+                SELECT ?1
+                WHERE NOT EXISTS (SELECT 1 FROM tags WHERE nome = ?1 COLLATE NOCASE)",
+                params![trimmed],
+            ).map_err(|e| e.to_string())?;
         }
     }
     tx.commit().map_err(|e| e.to_string())?;

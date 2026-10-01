@@ -42,14 +42,14 @@ export function Msg_Dialog(properties: Msg_Dialog_Properties) {
                                 class   = "btn btn-secondary"
                                 onClick = {properties.on_cancel}
                             >
-                                Cancelar
+                                Cancel
                             </button>
                             <button
                                 type    = "button"
                                 class   = {`btn ${properties.danger ? "btn-danger" : "btn-primary"}`}
                                 onClick = {properties.on_confirm}
                             >
-                                Confirmar
+                                Confirm
                             </button>
                         </>
                     ) : (

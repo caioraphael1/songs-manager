@@ -10,8 +10,8 @@ interface Tag_New_Dialog_Properties {
 
 export function Tag_New_Dialog(properties: Tag_New_Dialog_Properties) {
     let input_ref: HTMLInputElement | undefined;
-    const [tag_names_input, set_tag_names_input] = solid.createSignal("");
-    const [has_error, set_has_error]             = solid.createSignal(false);
+    const [tag_names_input, tag_names_input_set] = solid.createSignal("");
+    const [has_error,       has_error_set]       = solid.createSignal(false);
 
     function handle_submit() {
         const names = tag_names_input()
@@ -20,7 +20,7 @@ export function Tag_New_Dialog(properties: Tag_New_Dialog_Properties) {
             .filter(Boolean);
 
         if (names.length === 0) {
-            set_has_error(true);
+            has_error_set(true);
             return;
         }
 
@@ -45,13 +45,13 @@ export function Tag_New_Dialog(properties: Tag_New_Dialog_Properties) {
 
     return (
         <dialog.Dialog
-            title    = "Nova tag"
+            title    = "New tag"
             on_close = {properties.on_cancel}
         >
             <div class="tag-dialog-form form-container">
                 <div class="form-group">
                     <label for="new-tag-input">
-                        Nome (ou múltiplos nomes separados por vírgula)
+                        Name (ou many names separated by comma)
                     </label>
                     <input
                         id          = "new-tag-input"
@@ -61,10 +61,10 @@ export function Tag_New_Dialog(properties: Tag_New_Dialog_Properties) {
                         classList   = {{ "input-error": has_error() }}
                         value       = {tag_names_input()}
                         onInput     = {(e) => {
-                            set_tag_names_input(e.currentTarget.value);
-                            set_has_error(false);
+                            tag_names_input_set(e.currentTarget.value);
+                            has_error_set(false);
                         }}
-                        placeholder = "ex: Rock, Anos 80, Indie"
+                        placeholder = "e.g. Rock, 80's, Indie"
                     />
                 </div>
 
@@ -74,14 +74,14 @@ export function Tag_New_Dialog(properties: Tag_New_Dialog_Properties) {
                         class   = "btn btn-secondary"
                         onClick = {properties.on_cancel}
                     >
-                        Cancelar
+                        Cancel
                     </button>
                     <button
                         type    = "button"
                         class   = "btn btn-primary"
                         onClick = {handle_submit}
                     >
-                        Criar
+                        Create
                     </button>
                 </div>
             </div>
