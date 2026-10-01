@@ -1,7 +1,7 @@
 {
-    "name": "gerenciador-musicas",
+    "name": "songs-manager",
     "version": "1.0.0",
-    "description": "Gerenciador de Músicas",
+    "description": "Songs Manager",
     "type": "module",
     "scripts": {
         "dev": "vite",

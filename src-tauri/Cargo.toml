@@ -1,12 +1,12 @@
 [package]
-name        = "app_musicas"
+name        = "songs_manager"
 version     = "0.1.0"
-description = "Gerenciador de Músicas"
+description = "Songs Manager"
 authors     = ["Caio"]
 edition     = "2021"
 
 [lib]
-name       = "app_musicas_lib"
+name       = "songs_manager_lib"
 crate-type = ["rlib"] # "staticlib", "cdylib" are needed for mobile targets
 
 [build-dependencies]

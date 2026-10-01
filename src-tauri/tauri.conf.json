@@ -1,8 +1,8 @@
 {
     "$schema": "https://schema.tauri.app/config/2",
-    "productName": "Gerenciador de Músicas",
+    "productName": "Songs Manager",
     "version": "1.0.0",
-    "identifier": "com.caio.gerenciadormusicas",
+    "identifier": "com.caio.songsmanager",
 
     "build": {
         "beforeDevCommand": "bun run dev",
@@ -16,7 +16,7 @@
     "app": {
         "windows": [
             {
-                "title": "Gerenciador de Músicas",
+                "title": "Songs Manager",
                 "width": 1440,
                 "height": 720,
                 "minWidth": 900,

@@ -8,8 +8,11 @@
     - [ ] ! There's a "home screen" with just the option to create a new db or open an existing one.
     - [ ] ! Button to 'close' the db and go back to the home screen.
 - Utility:
+    - [ ] Get random playlist with up to 50 songs.
+    - [ ] `x` button in the search bar, to clear the search.
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
+    - [ ] Consider adding videos.
 - Theme: 
     - [ ] Use my site theme.
 - Tags:
