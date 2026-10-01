@@ -59,9 +59,9 @@ pub struct Search_Filter {
 }
 
 fn init_connection(path: &str) -> Result<Connection, String> {
-    let conn = Connection::open(path).map_err(|e| format!("Erro ao abrir banco: {}", e))?;
-    conn.execute_batch("PRAGMA foreign_keys = ON;").map_err(|e| format!("Erro no PRAGMA: {}", e))?;
-    conn.execute_batch(SCHEMA).map_err(|e| format!("Erro ao criar tabelas: {}", e))?;
+    let conn = Connection::open(path).map_err(|e| format!("Failed to open the database: {}", e))?;
+    conn.execute_batch("PRAGMA foreign_keys = ON;").map_err(|e| format!("PRAGMA Error: {}", e))?;
+    conn.execute_batch(SCHEMA).map_err(|e| format!("Failed to create tables: {}", e))?;
     Ok(conn)
 }
 
@@ -122,7 +122,7 @@ fn default_db_path_get() -> Option<String> {
 fn pick_db_file() -> Option<String> {
     let file = rfd::FileDialog::new()
         .add_filter("SQLite", &["db", "sqlite", "sqlite3"])
-        .set_title("Abrir ou criar banco SQLite")
+        .set_title("Open a SQLite database")
         .pick_file();
 
     file.map(|p| p.to_string_lossy().to_string())
@@ -147,7 +147,7 @@ fn get_active_db_path(state: State<'_, AppState>) -> Result<Option<String>, Stri
 #[tauri::command]
 fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song_Query_Result, String> {
     let db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_ref().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_ref().ok_or("No database opened.")?;
 
     let total_count: i64 = conn
         .query_row("SELECT COUNT(*) FROM musicas", [], |r| r.get(0))
@@ -217,11 +217,11 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
                 link: row.get(3)?,
             })
         })
-        .map_err(|e| format!("Erro na consulta: {}", e))?;
+        .map_err(|e| format!("Query error: {}", e))?;
 
     let mut songs = Vec::new();
     for item in rows {
-        songs.push(item.map_err(|e| format!("Erro lendo registro: {}", e))?);
+        songs.push(item.map_err(|e| format!("Error reading the registry: {}", e))?);
     }
 
     Ok(Song_Query_Result { songs, total_count })
@@ -235,7 +235,7 @@ fn song_create(
     state: State<'_, AppState>,
     ) -> Result<i64, String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
 
@@ -256,7 +256,7 @@ fn song_create(
     match res {
         Ok(_) => (),
         Err(rusqlite::Error::SqliteFailure(_, _)) => {
-            return Err("Já existe uma música com esse nome ou link.".to_string());
+            return Err("There's already a song with this name or link.".to_string());
         }
         Err(e) => return Err(e.to_string()),
     }
@@ -289,7 +289,7 @@ fn song_update(
     state: State<'_, AppState>,
     ) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
 
@@ -367,7 +367,7 @@ fn song_update(
 #[tauri::command]
 fn songs_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
     for id in ids {
@@ -381,7 +381,7 @@ fn songs_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String>
 #[tauri::command]
 fn tags_query(state: State<'_, AppState>) -> Result<Vec<TagRecord>, String> {
     let db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_ref().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_ref().ok_or("No database opened.")?;
 
     let mut stmt = conn
         .prepare(
@@ -413,7 +413,7 @@ fn tags_query(state: State<'_, AppState>) -> Result<Vec<TagRecord>, String> {
 #[tauri::command]
 fn tags_create(names: Vec<String>, state: State<'_, AppState>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
     for n in names {
@@ -435,11 +435,11 @@ fn tags_create(names: Vec<String>, state: State<'_, AppState>) -> Result<(), Str
 #[tauri::command]
 fn tag_update(id: i64, name: String, state: State<'_, AppState>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let trimmed = name.trim();
     if trimmed.is_empty() || trimmed.contains(',') {
-        return Err("Nome da tag inválido.".to_string());
+        return Err("Invalid tag name.".to_string());
     }
 
     let res = conn.execute(
@@ -450,7 +450,7 @@ fn tag_update(id: i64, name: String, state: State<'_, AppState>) -> Result<(), S
     match res {
         Ok(_) => Ok(()),
         Err(rusqlite::Error::SqliteFailure(_, _)) => {
-            Err("Já existe uma tag com esse nome.".to_string())
+            Err("There's already a tag with this name.".to_string())
         }
         Err(e) => Err(e.to_string()),
     }
@@ -459,7 +459,7 @@ fn tag_update(id: i64, name: String, state: State<'_, AppState>) -> Result<(), S
 #[tauri::command]
 fn tags_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
-    let conn = db_guard.as_mut().ok_or("Nenhum banco de dados aberto.")?;
+    let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
     let tx = conn.transaction().map_err(|e| e.to_string())?;
     for id in ids {
@@ -493,5 +493,5 @@ pub fn run() {
             tags_delete
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Error while running Tauri application");
 }

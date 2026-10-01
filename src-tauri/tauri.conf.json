@@ -1,27 +1,27 @@
 {
-    "$schema": "https://schema.tauri.app/config/2",
+    "$schema":     "https://schema.tauri.app/config/2",
     "productName": "Songs Manager",
-    "version": "1.0.0",
-    "identifier": "com.caio.songsmanager",
+    "version":     "1.0.0",
+    "identifier":  "com.caioraphael.songsmanager",
 
     "build": {
-        "beforeDevCommand": "bun run dev",
-        "devUrl": "http://localhost:1420",
+        "beforeDevCommand":   "bun run dev",
+        "devUrl":             "http://localhost:1420",
 
         "beforeBuildCommand": "bun run build",
         
-        "frontendDist": "../builds/web"
+        "frontendDist":       "../builds/web"
     },
 
     "app": {
         "windows": [
             {
-                "title": "Songs Manager",
-                "width": 1440,
-                "height": 720,
-                "minWidth": 900,
+                "title":     "Songs Manager",
+                "width":     1440,
+                "height":    720,
+                "minWidth":  900,
                 "minHeight": 540,
-                "center": true
+                "center":    true
             }
         ],
         "security": {

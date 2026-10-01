@@ -2,7 +2,7 @@
 name        = "songs_manager"
 version     = "0.1.0"
 description = "Songs Manager"
-authors     = ["Caio"]
+authors     = ["Caio Raphael"]
 edition     = "2021"
 
 [lib]
