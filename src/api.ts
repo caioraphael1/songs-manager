@@ -23,8 +23,8 @@ export async function db_open(path: string): Promise<string> {
 //     return await tauri_core.invoke<string | null>("get_active_db_path");
 // }
 
-export async function query_songs(filter: types.Search_Filter): Promise<types.Song_Query_Result> {
-    return await tauri_core.invoke<types.Song_Query_Result>("query_songs", { filter });
+export async function songs_query(filter: types.Search_Filter): Promise<types.Song_Query_Result> {
+    return await tauri_core.invoke<types.Song_Query_Result>("songs_query", { filter });
 }
 
 export async function song_create(
@@ -48,16 +48,16 @@ export async function songs_delete(ids: number[]): Promise<void> {
     await tauri_core.invoke("songs_delete", { ids });
 }
 
-export async function tags_query(): Promise<types.Tag[]> {
-    return await tauri_core.invoke<types.Tag[]>("tags_query");
+export async function all_tags_query(): Promise<types.Tag[]> {
+    return await tauri_core.invoke<types.Tag[]>("all_tags_query");
 }
 
-export async function tags_create(names: string[]): Promise<void> {
-    await tauri_core.invoke("tags_create", { names });
+export async function tag_new(names: string[]): Promise<void> {
+    await tauri_core.invoke("tag_new", { names });
 }
 
-export async function tag_update(id: number, name: string): Promise<void> {
-    await tauri_core.invoke("tag_update", { id, name });
+export async function tag_edit(id: number, name: string): Promise<void> {
+    await tauri_core.invoke("tag_edit", { id, name });
 }
 
 export async function tags_delete(ids: number[]): Promise<void> {

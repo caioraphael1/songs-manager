@@ -225,6 +225,33 @@
     z-index:       10;
 }
 
+.songs-panel .tags-list {
+    display:   flex;
+    flex-wrap: wrap;     /* tags drop to the next line instead of overflowing */
+    gap:       6px;      /* spacing between cards, horizontal and vertical */
+    padding:   4px 0px;
+}
+
+.songs-panel .tag {
+    display:       inline-block;
+    padding:       3px 8px;
+    border-radius: 5px;
+    border:        1px solid var(--border);
+    color:         var(--text-main);
+    background:    var(--bg-dialog);
+    align-items:   center;
+    gap:           6px;
+    font-size:     12px;
+    line-height:   1.5;
+    cursor:        pointer;
+    user-select:   none;
+    white-space:   nowrap; /*keep a multi-word tag on one line inside its card */
+}
+
+.songs-panel .row-selected .tag {
+    color:         var(--text-main);
+}
+
 /* COLUMNS TITLES */
 .songs-panel thead th.col-play-title {
     width:      70px;

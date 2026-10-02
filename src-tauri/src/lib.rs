@@ -10,7 +10,6 @@ use tauri::{AppHandle, Manager};
 
 const USER_CACHE_FILE: &str = "user_cache.txt";
 
-
 const SCHEMA: &str = r#"
 CREATE TABLE IF NOT EXISTS musicas (
     id INTEGER PRIMARY KEY,
@@ -31,51 +30,15 @@ CREATE TABLE IF NOT EXISTS musicas_tags (
 "#;
 
 
-pub struct AppState {
+pub struct App_State {
     pub db:      Mutex<Option<Connection>>,
     pub db_path: Mutex<Option<String>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct SongRecord {
-    pub id:   i64,
-    pub nome: String,
-    pub tags: String,
-    pub link: Option<String>,
-}
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct Song_Query_Result {
-    pub songs:       Vec<SongRecord>,
-    pub total_count: i64,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct TagRecord {
-    pub id:    i64,
-    pub nome:  String,
-    pub count: i64,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct Search_Filter {
-    pub free_text:           String,
-    pub included_tag_groups: Vec<Vec<String>>,
-    pub excluded_tags:       Vec<String>,
-}
-
-
-fn tag_get_id(conn: &Connection, name: &str) -> Result<Option<i64>, rusqlite::Error> {
-    let name_trimmed = name.trim();
-    let mut stmt = conn.prepare("SELECT id FROM tags WHERE nome = ? COLLATE NOCASE")?;
-    let mut rows = stmt.query(params![name_trimmed])?;
-
-    match rows.next()? {
-        Some(row) => Ok(Some(row.get(0)?)),
-        None      => Ok(None),
-    }
-}
-
+// -----------------------------------------------------
+// USER CACHE
+// -----------------------------------------------------
 
 fn user_cache_path_last_open_db(app: &AppHandle) -> Option<PathBuf> {
     app.path().app_config_dir().ok().map(|d| d.join(USER_CACHE_FILE))
@@ -88,6 +51,11 @@ fn user_cache_path_last_open_db_set(app: &AppHandle, path: &str) -> Result<(), S
     }
     std::fs::write(file, path).map_err(|e| e.to_string())
 }
+
+
+// -----------------------------------------------------
+// DATABASE
+// -----------------------------------------------------
 
 #[tauri::command]
 fn db_get_automatic_path(app: AppHandle) -> Option<String> {
@@ -147,7 +115,7 @@ fn db_init_connection(path: &str) -> Result<Connection, String> {
 fn db_open(
     app: AppHandle,
     path: String,
-    state: State<'_, AppState>,
+    state: State<'_, App_State>,
     ) -> Result<String, String> {
     let conn = db_init_connection(&path)?;
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
@@ -165,13 +133,40 @@ fn db_open(
 
 
 // #[tauri::command]
-// fn get_active_db_path(state: State<'_, AppState>) -> Result<Option<String>, String> {
+// fn get_active_db_path(state: State<'_, App_State>) -> Result<Option<String>, String> {
 //     let path_guard = state.db_path.lock().map_err(|e| e.to_string())?;
 //     Ok(path_guard.clone())
 // }
 
+
+// -----------------------------------------------------
+// SONGS
+// -----------------------------------------------------
+
+#[derive(Deserialize, Debug)]
+pub struct Search_Filter {
+    pub free_text:           String,
+    pub included_tag_groups: Vec<Vec<String>>,
+    pub excluded_tags:       Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Song_Record {
+    pub id:   i64,
+    pub nome: String,
+    pub tags: Vec<String>,
+    pub link: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Song_Query_Result {
+    pub songs:       Vec<Song_Record>,
+    pub total_count: i64,
+}
+
+
 #[tauri::command]
-fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song_Query_Result, String> {
+fn songs_query(filter: Search_Filter, state: State<'_, App_State>) -> Result<Song_Query_Result, String> {
     let db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_ref().ok_or("No database opened.")?;
 
@@ -180,8 +175,10 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
         .unwrap_or(0);
 
     let search_pattern = format!("%{}%", filter.free_text.trim());
+
+    // Use ASCII Unit Separator (SQL: char(31), Rust: '\u{1F}' == 0x1F == 31) so a tag containing | can't break the split.
     let mut sql = String::from(
-        "SELECT m.id, m.nome, COALESCE(GROUP_CONCAT(t.nome, ' | ' ORDER BY t.nome COLLATE NOCASE), ''), m.link \
+        "SELECT m.id, m.nome, COALESCE(GROUP_CONCAT(t.nome, char(31) ORDER BY t.nome COLLATE NOCASE), ''), m.link \
          FROM musicas m \
          LEFT JOIN musicas_tags mt ON mt.musica_id = m.id \
          LEFT JOIN tags t ON t.id = mt.tag_id \
@@ -196,7 +193,7 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
         Box::new(search_pattern.clone()),
     ];
 
-    // Included tag groups (AND across groups, OR within group)
+    // Custom query: Included tag groups (AND across groups, OR within group)
     for group in filter.included_tag_groups {
         if group.is_empty() {
             continue;
@@ -213,8 +210,7 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
             sql_params.push(Box::new(tag));
         }
     }
-
-    // Excluded tags (song must NOT have any of these)
+    // Custom query: Excluded tags (song must NOT have any of these)
     if !filter.excluded_tags.is_empty() {
         let placeholders = filter.excluded_tags.iter().map(|_| "?").collect::<Vec<_>>().join(",");
         sql.push_str(&format!(
@@ -236,10 +232,17 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
 
     let rows = stmt
         .query_map(param_refs.as_slice(), |row| {
-            Ok(SongRecord {
+            let tags_raw: String  = row.get(2)?;
+            let tags: Vec<String> = if tags_raw.is_empty() {
+                Vec::new()
+            } else {
+                tags_raw.split('\u{1F}').map(str::to_owned).collect()
+            };
+
+            Ok(Song_Record {
                 id:   row.get(0)?,
                 nome: row.get(1)?,
-                tags: row.get(2)?,
+                tags: tags,
                 link: row.get(3)?,
             })
         })
@@ -250,7 +253,7 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
         songs.push(item.map_err(|e| format!("Error reading the registry: {}", e))?);
     }
 
-    Ok(Song_Query_Result { songs, total_count })
+    Ok(Song_Query_Result{ songs, total_count })
 }
 
 #[tauri::command]
@@ -258,7 +261,7 @@ fn song_create(
     nome:  String,
     link:  Option<String>,
     tags:  Vec<String>,
-    state: State<'_, AppState>,
+    state: State<'_, App_State>,
     ) -> Result<i64, String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
@@ -312,7 +315,7 @@ fn song_update(
     nome:  String,
     link:  Option<String>,
     tags:  Vec<String>,
-    state: State<'_, AppState>,
+    state: State<'_, App_State>,
     ) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
@@ -391,7 +394,7 @@ fn song_update(
 }
 
 #[tauri::command]
-fn songs_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String> {
+fn songs_delete(ids: Vec<i64>, state: State<'_, App_State>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
@@ -404,8 +407,20 @@ fn songs_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String>
     Ok(())
 }
 
+
+// -----------------------------------------------------
+// TAGS
+// -----------------------------------------------------
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Tag_Record {
+    pub id:    i64,
+    pub nome:  String,
+    pub count: i64,
+}
+
 #[tauri::command]
-fn tags_query(state: State<'_, AppState>) -> Result<Vec<TagRecord>, String> {
+fn all_tags_query(state: State<'_, App_State>) -> Result<Vec<Tag_Record>, String> {
     let db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_ref().ok_or("No database opened.")?;
 
@@ -421,7 +436,7 @@ fn tags_query(state: State<'_, AppState>) -> Result<Vec<TagRecord>, String> {
 
     let rows = stmt
         .query_map([], |row| {
-            Ok(TagRecord {
+            Ok(Tag_Record {
                 id: row.get(0)?,
                 nome: row.get(1)?,
                 count: row.get(2)?,
@@ -437,7 +452,7 @@ fn tags_query(state: State<'_, AppState>) -> Result<Vec<TagRecord>, String> {
 }
 
 #[tauri::command]
-fn tags_create(names: Vec<String>, state: State<'_, AppState>) -> Result<(), String> {
+fn tag_new(names: Vec<String>, state: State<'_, App_State>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
@@ -459,7 +474,7 @@ fn tags_create(names: Vec<String>, state: State<'_, AppState>) -> Result<(), Str
 }
 
 #[tauri::command]
-fn tag_update(id: i64, name: String, state: State<'_, AppState>) -> Result<(), String> {
+fn tag_edit(id: i64, name: String, state: State<'_, App_State>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
@@ -483,7 +498,7 @@ fn tag_update(id: i64, name: String, state: State<'_, AppState>) -> Result<(), S
 }
 
 #[tauri::command]
-fn tags_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String> {
+fn tags_delete(ids: Vec<i64>, state: State<'_, App_State>) -> Result<(), String> {
     let mut db_guard = state.db.lock().map_err(|e| e.to_string())?;
     let conn = db_guard.as_mut().ok_or("No database opened.")?;
 
@@ -496,10 +511,26 @@ fn tags_delete(ids: Vec<i64>, state: State<'_, AppState>) -> Result<(), String> 
     Ok(())
 }
 
+fn tag_get_id(conn: &Connection, name: &str) -> Result<Option<i64>, rusqlite::Error> {
+    let name_trimmed = name.trim();
+    let mut stmt = conn.prepare("SELECT id FROM tags WHERE nome = ? COLLATE NOCASE")?;
+    let mut rows = stmt.query(params![name_trimmed])?;
+
+    match rows.next()? {
+        Some(row) => Ok(Some(row.get(0)?)),
+        None      => Ok(None),
+    }
+}
+
+
+// -----------------------------------------------------
+// RUN
+// -----------------------------------------------------
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .manage(AppState {
+        .manage(App_State {
             db: Mutex::new(None),
             db_path: Mutex::new(None),
         })
@@ -510,13 +541,13 @@ pub fn run() {
             db_create_path_dialog,
             db_open,
             // get_active_db_path,
-            query_songs,
+            songs_query,
             song_create,
             song_update,
             songs_delete,
-            tags_query,
-            tags_create,
-            tag_update,
+            all_tags_query,
+            tag_new,
+            tag_edit,
             tags_delete
         ])
         .run(tauri::generate_context!())

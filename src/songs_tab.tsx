@@ -238,7 +238,13 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                                             )}
                                         </td>
                                         <td class="col-name">{song.nome}</td>
-                                        <td class="col-tags">{song.tags}</td>
+                                        <td class="col-tags">
+                                            <div class="tags-list">
+                                                <solid.For each={song.tags}>
+                                                    {(tag) => <span class="tag">{tag}</span>}
+                                                </solid.For>
+                                            </div>
+                                        </td>
                                     </tr>
                                 )}
                             </solid.For>

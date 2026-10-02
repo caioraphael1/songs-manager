@@ -1,7 +1,7 @@
 export interface Song {
     id:   number;
     nome: string;
-    tags: string;
+    tags: string[];
     link: string | null;
 }
 

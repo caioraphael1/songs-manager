@@ -1,16 +1,14 @@
 
 ## TODOs
 
+- Expansion:
+    - [ ] ! Tabs for Movies, Books, Mangá, Anime, Series, Videos.
 - Utility:
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
     - [ ] Get random playlist with up to 50 songs.
     - [ ] Button to export as HTML.
     - [ ] "Jungle amigável" as a saved query?
-- Tags Tab:
-    - [ ] ! Show the tags as a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
-- Expansion:
-    - [ ] ! Tabs for Movies, Books, Mangá, Anime, Series, Videos.
 - Home screen:
     - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
     - [ ] Button to 'close' the db and go back to the home screen.
