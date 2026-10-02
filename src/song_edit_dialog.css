@@ -85,21 +85,6 @@
 }
 
 
-.song-edit-form .tag-remove-btn {
-    background:  transparent;
-    border:      none;
-    color:       inherit;
-    font-size:   14px;
-    line-height: 1;
-    cursor:      pointer;
-    opacity:     0.7;
-    padding:     0 2px;
-}
-
-.song-edit-form .tag-remove-btn:hover {
-    opacity: 1;
-}
-
 .song-edit-form .tag-actions-row {
     display:    flex;
     margin-top: 2px;

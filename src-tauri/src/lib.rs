@@ -181,7 +181,7 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
 
     let search_pattern = format!("%{}%", filter.free_text.trim());
     let mut sql = String::from(
-        "SELECT m.id, m.nome, COALESCE(GROUP_CONCAT(t.nome, ', '), ''), m.link \
+        "SELECT m.id, m.nome, COALESCE(GROUP_CONCAT(t.nome, ' | ' ORDER BY t.nome COLLATE NOCASE), ''), m.link \
          FROM musicas m \
          LEFT JOIN musicas_tags mt ON mt.musica_id = m.id \
          LEFT JOIN tags t ON t.id = mt.tag_id \
@@ -237,7 +237,7 @@ fn query_songs(filter: Search_Filter, state: State<'_, AppState>) -> Result<Song
     let rows = stmt
         .query_map(param_refs.as_slice(), |row| {
             Ok(SongRecord {
-                id: row.get(0)?,
+                id:   row.get(0)?,
                 nome: row.get(1)?,
                 tags: row.get(2)?,
                 link: row.get(3)?,

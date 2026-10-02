@@ -130,13 +130,13 @@ if (root) {
             }
         }
 
-        function handle_search_change(query: string) {
+        function search_updated(query: string) {
             search_query_set(query);
             songs_reload(query);
         }
 
-        // types.Song handlers
-        async function handle_save_new_song(
+        // 
+        async function song_new_save(
             name:      string,
             link:      string | null,
             song_tags: string[],
@@ -151,7 +151,7 @@ if (root) {
             }
         }
 
-        async function song_update(
+        async function song_edit_save(
             name:      string,
             link:      string | null,
             song_tags: string[],
@@ -302,7 +302,7 @@ if (root) {
                             songs            = {songs()}
                             total_count      = {total_songs_count()}
                             search_query     = {search_query()}
-                            on_search_change = {handle_search_change}
+                            on_search_change = {search_updated}
                             on_song_new      = {() => is_new_song_dialog_open_set(true)}
                             on_song_edit     = {(song) => editing_song_set(song)}
                             on_songs_delete  = {handle_songs_delete}
@@ -315,7 +315,7 @@ if (root) {
                     <song_edit_dialog.Song_Edit_Dialog
                         title          = "New song"
                         available_tags = {available_tag_names()}
-                        on_save        = {handle_save_new_song}
+                        on_save        = {song_new_save}
                         on_cancel      = {() => is_new_song_dialog_open_set(false)}
                     />
                 </solid.Show>
@@ -329,12 +329,12 @@ if (root) {
                             initial_tags   = {
                                 song().tags
                                     ? song()
-                                        .tags.split(",")
+                                        .tags.split(" | ") // This needs to match the concat from api.query_songs
                                         .map((t) => t.trim())
                                     : []
                             }
                             available_tags = {available_tag_names()}
-                            on_save        = {song_update}
+                            on_save        = {song_edit_save}
                             on_cancel      = {() => editing_song_set(null)}
                         />
                     )}

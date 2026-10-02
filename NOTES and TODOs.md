@@ -1,10 +1,15 @@
 
 ## TODOs
+
+- QoL:
+    - [ ] ! Message warning if the link is broken, somehow.
+    - [ ] ! Mouse release on song edit annoyance.
 - Utility:
-    - [ ] ! `x` button in the search bar, to clear the search.
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
     - [ ] ! Get random playlist with up to 50 songs.
+    - [ ] Button to export as HTML.
+    - [ ] "Jungle amigável" as a saved query?
 - Tags Tab:
     - [ ] Instead of showing the tags in the 'Songs Tab' separated by comma, replace it by a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
 - Expansion:
@@ -15,6 +20,7 @@
 - Etc:
     - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.
+
 
 
 ## Design prototypes
@@ -36,6 +42,7 @@
     ---
     Distópico AND Emocionais AND (NOT Dark) OR 
     ```
+
 
 
 ## Decision
