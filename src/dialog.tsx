@@ -13,6 +13,8 @@ export function Dialog(properties: solid.ParentProps<Dialog_Properties>) {
         }
     }
 
+    let mouse_down_on_backdrop = false;
+
     solid.onMount(() => {
         window.addEventListener("keydown", on_key_down);
     });
@@ -24,10 +26,14 @@ export function Dialog(properties: solid.ParentProps<Dialog_Properties>) {
     return (
         <div
             class   = "dialog-backdrop"
-            onClick = {(e) => {
-                if (e.target === e.currentTarget) {
+            onMouseDown = {(e) => {
+                mouse_down_on_backdrop = e.target === e.currentTarget;
+            }}
+            onClick     = {(e) => {
+                if (mouse_down_on_backdrop && e.target === e.currentTarget) {
                     properties.on_close();
                 }
+                mouse_down_on_backdrop = false;
             }}
         >
             <div class="dialog-card">

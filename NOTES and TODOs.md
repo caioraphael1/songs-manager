@@ -1,23 +1,21 @@
 
 ## TODOs
 
-- QoL:
-    - [ ] ! Message warning if the link is broken, somehow.
-    - [ ] ! Mouse release on song edit annoyance.
 - Utility:
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
-    - [ ] ! Get random playlist with up to 50 songs.
+    - [ ] Get random playlist with up to 50 songs.
     - [ ] Button to export as HTML.
     - [ ] "Jungle amigável" as a saved query?
 - Tags Tab:
-    - [ ] Instead of showing the tags in the 'Songs Tab' separated by comma, replace it by a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
+    - [ ] ! Show the tags as a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
 - Expansion:
-    - [ ] Tabs for Movies, Books, Mangá, Anime, Series, Videos.
+    - [ ] ! Tabs for Movies, Books, Mangá, Anime, Series, Videos.
 - Home screen:
     - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
     - [ ] Button to 'close' the db and go back to the home screen.
 - Etc:
+    - [ ] Message warning if the link is broken, somehow.
     - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.
 
