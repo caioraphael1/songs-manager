@@ -9,7 +9,7 @@
 }
 
 .dialog-card {
-    background:     var(--bg-card);
+    background:     var(--bg-dialog);
     border:         1px solid var(--border);
     border-radius:  var(--radius-card);
     min-width:      420px;

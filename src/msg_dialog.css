@@ -33,22 +33,23 @@
 }
 
 .message-content .btn-secondary {
-    background:   transparent;
-    border-color: var(--border);
+    background:   var(--bg-card-2);
+    border:       1px solid var(--border);
     color:        var(--text-main);
 }
 
 .message-content .btn-secondary:hover {
-    background: var(--bg-hover);
+    background:   var(--dark-a-2);
+    border-color: var(--highlight-1);
 }
 
 .message-content .btn-primary {
-    background: var(--accent);
-    color:      #ffffff;
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
 }
 
 .message-content .btn-primary:hover {
-    background: var(--accent-hover);
+    background: var(--highlight-3);
 }
 
 .message-content .btn-danger {

@@ -4,7 +4,7 @@
 - Can open songs in the browser and create temporary YouTube playlists.
 - Query the database with the search bar, or use an advanced query with the `tag:` keyword.
 
-<img src="assets/2026-09-29.png">
+<img src="assets/2026-10-01.png">
 
 
 ## Prerequisites

@@ -86,14 +86,14 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                 <div class="toolbar-left">
                     <button
                         type    = "button"
-                        class   = "btn btn-primary"
+                        class   = "btn btn-tag-new"
                         onClick = {properties.on_tag_new}
                     >
                         ＋ New tag
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-outline"
+                        class    = "btn btn-tag-edit"
                         disabled = {selected_ids().length !== 1}
                         onClick  = {handle_edit_click}
                     >
@@ -101,7 +101,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-outline-danger"
+                        class    = "btn btn-tag-delete"
                         disabled = {selected_ids().length === 0}
                         onClick  = {handle_delete_click}
                     >
@@ -137,7 +137,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                                         }
                                     >
                                         <td class="col-tag">
-                                            <span class="tag-title">
+                                            <span class="tag-name">
                                                 {tag.nome}
                                             </span>
                                             <span class="tag-count">
@@ -150,6 +150,13 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                         )}
                     </tbody>
                 </table>
+            </div>
+            
+            {/* Footer */}
+            <div class="footer">
+                <span class="stats-text">
+                    Showing {properties.tags.length}{" "} tag(s)
+                </span>
             </div>
         </div>
     );

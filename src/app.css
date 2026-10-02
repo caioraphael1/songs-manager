@@ -1,20 +1,45 @@
 :root {
-    --bg-window:    #1a1a1a;
-    --bg-card:      #262626;
-    --bg-header:    #2f2f2f;
-    --bg-hover:     #333333;
-    --border:       #3a3a3a;
-    --text-main:    #dcddde;
-    --text-muted:   #8b8d91;
-    --accent:       #3d7fe0;
-    --accent-hover: #2f68bd;
-    --danger:       #f04545;
-    --danger-hover: #d13030;
-    --danger-bg:    rgba(240, 69, 69, 0.15);
-    --selection:    #3d7fe0;
-    --radius-card:  8px;
-    --radius-sm:    4px;
-    --radius-tab:   10px;
+    --bg-window:      #23212d;
+
+    --bg-card:        rgba(0, 0, 0, 0.40);
+    --bg-card-2:      rgba(0, 0, 0, 0.20);
+
+    --bg-dialog:      #201f29;
+
+    --bg-input:       #25242f;
+    --bg-hover:       #333333;
+    
+    --border:         rgb(11, 11, 15);
+    
+    --text-main:      #dcddde;
+    --text-muted:     #8b8d91;
+    --danger:         #f04545;
+    --danger-hover:   #d13030;
+    --danger-bg:      rgba(240, 69, 69, 0.15);
+    --radius-card:    8px;
+    --radius-sm:      4px;
+    --radius-tab:     10px;
+    --button-bg:      rgba(0, 0, 0, 0.20);
+    
+    --dark-1:               rgb(11, 11, 15);
+    --dark-a-1:             #181820cc;
+    --dark-a-2:             rgba(57, 57, 76, 0.25);
+    --dark-a-4:             rgba(19, 19, 26, 0.93);
+    --highlight-1:          #f3db53;
+    --highlight-2:          #e5c74ef5;
+    --highlight-3:          #f7e187f5;
+    --highlight-4:          #b0a161f5;
+    --highlight-5:          #e6cc64f5;
+    --highlight-text:       #130606;
+    --highlight-hover-text: #0c0b0b;
+
+    --highlight-hover-bg:   rgba(240, 214, 69, 0.15);
+
+    /* Scroll */
+    --scroll-bg:       var(--dark-a-4);
+    --scroll-fg:       var(--highlight-2);
+    --scroll-fg-hover: var(--highlight-1);
+    --scroll-corner:   var(--dark-a-1);
 }
 
 * {
@@ -32,7 +57,14 @@ body {
     overflow:         hidden;
     font-size:        13px;
     line-height:      1.4;
+
+
+    /* background-image:    url("/assets/bg.png"); */
+    background-repeat:   no-repeat;
+    background-position: center;
+    background-size:     cover;
 }
+
 
 input,
 button,
@@ -52,26 +84,49 @@ textarea {
     height: 8px;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--bg-card);
-}
 
-::-webkit-scrollbar-thumb {
-    background:    var(--border);
+/* Track (Background) */
+::-webkit-scrollbar-track
+{
+    background:    var(--scroll-bg);
     border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
+/* Thumb (Foreground) */
+::-webkit-scrollbar-thumb
+{
+    background:    var(--scroll-fg);
+    border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover
+{
+    background: var(--scroll-fg-hover);
+}
+
+/* Corner */
+::-webkit-scrollbar-corner
+{
+    background: var(--scroll-corner);
+}
+
+/* Firefox support */
+/* @supports (-moz-appearance: none) { */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scroll-fg) var(--scroll-bg);
+    }
+/* } */
+
+
 
 
 .app-layout {
-    display:        flex;
-    flex-direction: column;
-    height:         100vh;
-    padding:        16px 20px 20px;
-    gap:            16px;
+    display:          flex;
+    flex-direction:   column;
+    height:           100vh;
+    padding:          16px 20px 20px;
+    gap:              16px;
+    background-color: var(--dark-a-1);
 }
 
 .app-layout .top-bar {
@@ -105,24 +160,31 @@ textarea {
     gap:         8px;
 }
 
-.app-layout .tab-btn {
+.app-layout .btn-tab {
     height:        36px;
     width:         100px;
-    border-radius: var(--radius-tab);
-    border:        none;
+    border-radius: 3px;
     font-size:     13px;
     font-weight:   600;
     cursor:        pointer;
-    background:    var(--bg-card);
+    border:        1px solid var(--highlight-5);
+    background:    var(--bg-card-2);
     color:         var(--text-main);
-    transition: 
-        background-color 0.15s ease,
-        color 0.15s ease;
 }
 
-.app-layout .tab-btn.tab-active {
-    background: var(--accent);
-    color:      #ffffff;
+.app-layout .btn-tab:hover:not(.tab-active) {
+    transform:    translateY(-1px);
+    background:   var(--highlight-hover-bg);
+    border-color: var(--highlight-1);
+}
+
+.app-layout .btn-tab.tab-active {
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
+}
+.app-layout .btn-tab.tab-active:hover {
+    transform:    translateY(-1px);
+    background:   var(--highlight-3);
 }
 
 .app-layout .main-content {
@@ -145,12 +207,15 @@ textarea {
     transition:      all 0.15s ease;
 }
 
-.app-layout .btn-outline {
-    background: transparent;
-    border:     1px solid var(--border);
-    color:      var(--text-main);
+
+.app-layout .btn-header {
+    border:        1px solid var(--highlight-5);
+    background:    var(--bg-card-2);
+    color:         var(--text-main);
 }
 
-.app-layout .btn-outline:hover {
-    background: var(--bg-hover);
+.app-layout .btn-header:hover {
+    transform:    translateY(-1px);
+    background:   var(--highlight-hover-bg);
+    border-color: var(--highlight-1);
 }

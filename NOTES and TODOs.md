@@ -1,24 +1,20 @@
 
 ## TODOs
-
-- Database:
-    - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
-    - [ ] Button to 'close' the db and go back to the home screen.
 - Utility:
-    - [ ] Get random playlist with up to 50 songs.
-    - [ ] `x` button in the search bar, to clear the search.
+    - [ ] ! `x` button in the search bar, to clear the search.
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
-    - [ ] Consider adding videos.
-- Theme: 
-    - [ ] ! Use my site theme.
-- Tags:
+    - [ ] ! Get random playlist with up to 50 songs.
+- Tags Tab:
     - [ ] Instead of showing the tags in the 'Songs Tab' separated by comma, replace it by a 'card'/'ballon'/idk, just like inside the `Song_Edit_Dialog`.
+- Expansion:
+    - [ ] Tabs for Movies, Books, Mangá, Anime, Series, Videos.
+- Home screen:
+    - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
+    - [ ] Button to 'close' the db and go back to the home screen.
 - Etc:
     - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.
-- Expansion:
-    - Tabs for Movies, Books, Mangá, Anime, Series, Videos.
 
 
 ## Design prototypes

@@ -9,6 +9,7 @@
     overflow:       hidden;
 }
 
+/* TOOLBAR (HEADER) */
 .songs-panel .toolbar {
     display:       flex;
     align-items:   center;
@@ -16,13 +17,11 @@
     padding:       14px 16px;
     border-bottom: 1px solid var(--border);
 }
-
 .songs-panel .toolbar-left {
     display:     flex;
     align-items: center;
     gap:         8px;
 }
-
 .songs-panel .toolbar-search {
     flex: 1;
 }
@@ -30,7 +29,7 @@
 .songs-panel .search-input {
     width:         100%;
     height:        36px;
-    background:    var(--bg-header);
+    background:    var(--bg-input);
     border:        1px solid var(--border);
     border-radius: var(--radius-sm);
     color:         var(--text-main);
@@ -40,7 +39,7 @@
 }
 
 .songs-panel .search-input:focus {
-    border-color: var(--accent);
+    border-color: var(--highlight-4);
 }
 
 .songs-panel .toolbar-right {
@@ -68,49 +67,74 @@
     cursor:  not-allowed;
 }
 
-.songs-panel .btn-primary {
-    background: var(--accent);
-    color:      #ffffff;
+/* BTN NEW SONG */
+.songs-panel .btn-song-new {
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
+}
+.songs-panel .btn-song-new:hover:not(:disabled) {
+    transform:  translateY(-1px);
+    background: var(--highlight-3);
 }
 
-.songs-panel .btn-primary:hover:not(:disabled) {
-    background: var(--accent-hover);
-}
-
-.songs-panel .btn-outline {
-    background:   transparent;
-    border-color: var(--border);
+/* BTN EDIT */
+/* .songs-panel .btn-song-edit {
+    background:   var(--bg-card-2);
+    border:       1px solid var(--border);
     color:        var(--text-main);
 }
+.songs-panel .btn-song-edit:hover:not(:disabled) {
+    background:   var(--dark-a-2);
+    border-color: var(--highlight-1);
+} */
 
-.songs-panel .btn-outline:hover:not(:disabled) {
-    background: var(--bg-hover);
+.songs-panel .btn-song-edit {
+    background:   var(--dark-a-2);
+    border-color: var(--highlight-1);
+    color:        var(--text-main); 
+}
+.songs-panel .btn-song-edit:hover:not(:disabled) {
+    transform:    translateY(-1px);
+    background:   var(--highlight-hover-bg);
+    border-color: var(--highlight-1);
 }
 
-.songs-panel .btn-outline-danger {
-    background:   transparent;
+/* BTN DELETE */
+.songs-panel .btn-song-delete {
+    background:   var(--dark-a-2);
     border-color: var(--danger);
     color:        var(--danger);
 }
-
-.songs-panel .btn-outline-danger:hover:not(:disabled) {
+.songs-panel .btn-song-delete:hover:not(:disabled) {
+    transform:  translateY(-1px);
     background: var(--danger-bg);
 }
 
+/* BTN YT PLAYLIST */
+.songs-panel .btn-yt-playlist {
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
+}
+.songs-panel .btn-yt-playlist:hover:not(:disabled) {
+    transform:  translateY(-1px);
+    background: var(--highlight-3);
+}
+
+
+/* TABLE */
 .songs-panel .table-container {
     flex:       1;
     overflow-y: auto;
     overflow-x: hidden;
 }
-
 .songs-panel .songs-table {
     width:           100%;
     border-collapse: collapse;
+    border-spacing:  0;
     table-layout:    fixed;
 }
-
 .songs-panel .songs-table th {
-    background:    var(--bg-header);
+    background:    var(--bg-input);
     color:         var(--text-main);
     font-weight:   700;
     font-size:     12px;
@@ -119,23 +143,38 @@
     position:      sticky;
     top:           0;
     z-index:       10;
-    border-bottom: 1px solid var(--border);
 }
 
-.songs-panel .col-play {
-    width:      48px;
+/* COLUMNS TITLES */
+.songs-panel thead th.col-play-title {
+    width:      70px;
     text-align: center !important;
-    padding:    0 !important;
+    padding:    0      !important;
+}
+.songs-panel thead th.col-name-title {
+    padding:     0px 6px;
+    font-weight: bold;
+    font-size:   small;
+}
+.songs-panel thead th.col-tags-title {
+    font-weight: bold;
+    font-size:   small;
+}
+
+/* COLUMNS */
+.songs-panel .col-play {
+    width:      64px;
+    text-align: center !important;
+    padding:    0      !important;
 }
 
 .songs-panel .col-name {
     width:         45%;
-    padding:       0 12px;
+    padding:       0 2px;
     overflow:      hidden;
     text-overflow: ellipsis;
     white-space:   nowrap;
 }
-
 .songs-panel .col-tags {
     width:         55%;
     padding:       0 12px;
@@ -144,32 +183,35 @@
     white-space:   nowrap;
 }
 
+/* ROW */
 .songs-panel .table-row {
     height:        34px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     cursor:        default;
-    transition:    background-color 0.1s ease;
 }
-
+.songs-panel .table-row td {
+    border:     none;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+.songs-panel .table-row:hover td,
+.songs-panel .row-selected td {
+    box-shadow: none;
+}
 .songs-panel .table-row:hover:not(.row-selected) {
-    background: rgba(255, 255, 255, 0.04);
+    background:  rgba(255, 255, 255, 0.04);
 }
-
+/* ROW SELECTED */
 .songs-panel .row-selected {
-    background: var(--selection) !important;
-    color:      #ffffff !important;
+    background: var(--highlight-5);
+    color:      var(--highlight-text);
 }
 
-.songs-panel .empty-cell {
-    text-align: center;
-    padding:    40px;
-    color:      var(--text-muted);
-}
 
-.songs-panel .play-btn {
+
+/* BTN PLAY */
+.songs-panel .btn-play {
     background:      transparent;
     border:          none;
-    color:           var(--accent);
+    color:           var(--highlight-5);
     cursor:          pointer;
     font-size:       13px;
     width:           28px;
@@ -178,27 +220,36 @@
     display:         inline-flex;
     align-items:     center;
     justify-content: center;
-    transition:      all 0.12s ease;
+    /* transition:      all 0.12s ease; */
+}
+.songs-panel .btn-play:hover {
+    background: var(--highlight-3);
+    color:      var(--dark-1);
+}
+/* BTN PLAY + ROW SELECTED*/
+.songs-panel .table-row.row-selected .btn-play {
+    color: var(--dark-1);
 }
 
-.songs-panel .table-row.row-selected .play-btn {
-    color: #ffffff;
+
+
+
+.songs-panel .empty-cell {
+    text-align: center;
+    padding:    40px;
+    color:      var(--text-muted);
 }
 
-.songs-panel .play-btn:hover {
-    background: rgba(61, 127, 224, 0.2);
-    transform:  scale(1.15);
-}
-
+/* FOOTER */
 .songs-panel .footer {
     display:         flex;
     justify-content: flex-end;
     align-items:     center;
-    padding:         8px 16px;
+    padding:         6px 36px;
     border-top:      1px solid var(--border);
 }
-
+/* STATS */
 .songs-panel .stats-text {
-    font-size: 12px;
+    font-size: 11.3px;
     color:     var(--text-muted);
 }

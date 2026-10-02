@@ -51,7 +51,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
 
     function handle_row_double_click(song: types.Song, e: MouseEvent) {
         const target = e.target as HTMLElement;
-        if (target.closest(".play-btn")) return;
+        if (target.closest(".btn-play")) return;
         properties.on_song_edit(song);
     }
 
@@ -113,14 +113,14 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                 <div class="toolbar-left">
                     <button
                         type    = "button"
-                        class   = "btn btn-primary"
+                        class   = "btn btn-song-new"
                         onClick = {properties.on_song_new}
                     >
                         ＋ New song
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-outline"
+                        class    = "btn btn-song-edit"
                         disabled = {selected_ids().length !== 1}
                         onClick  = {handle_edit_click}
                     >
@@ -128,7 +128,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-outline-danger"
+                        class    = "btn btn-song-delete"
                         disabled = {selected_ids().length === 0}
                         onClick  = {handle_delete_click}
                     >
@@ -151,11 +151,11 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                 <div class="toolbar-right">
                     <button
                         type     = "button"
-                        class    = "btn btn-primary"
-                        disabled = {youtube_video_ids().length === 0}
+                        class    = "btn btn-yt-playlist"
+                        disabled = {youtube_video_ids().length < 2}
                         onClick  = {handle_create_you_tube_playlist}
                         title    = {
-                            youtube_video_ids().length === 0
+                            youtube_video_ids().length < 2
                                 ? "Select songs with Youtube URLs"
                                 : `Create playlist with ${youtube_video_ids().length} video(s)`
                         }
@@ -170,9 +170,9 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                 <table class="songs-table">
                     <thead>
                         <tr>
-                            <th class="col-play"></th>
-                            <th class="col-name">Songs</th>
-                            <th class="col-tags">Tags</th>
+                            <th class="col-play-title"></th>
+                            <th class="col-name-title">Songs</th>
+                            <th class="col-tags-title">Tags</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,8 +191,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                                     <tr
                                         class      = "table-row"
                                         classList  = {{
-                                            "row-selected":
-                                                selected_ids().includes(song.id),
+                                            "row-selected": selected_ids().includes(song.id),
                                         }}
                                         onClick    = {(e) =>
                                             handle_row_click(song, index(), e)
@@ -205,7 +204,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                                             {song.link && (
                                                 <button
                                                     type    = "button"
-                                                    class   = "play-btn"
+                                                    class   = "btn-play"
                                                     title   = {`Open link: ${song.link}`}
                                                     onClick = {(e) =>
                                                         handle_play_click(

@@ -250,14 +250,14 @@ if (root) {
                     <div class="top-bar-actions">
                         <button
                             type    = "button"
-                            class   = "btn btn-outline"
+                            class   = "btn btn-header"
                             onClick = {db_create_dialog}
                         >
                             Create new database
                         </button>
                         <button
                             type    = "button"
-                            class   = "btn btn-outline"
+                            class   = "btn btn-header"
                             onClick = {db_open_dialog}
                         >
                             Open existing database
@@ -269,7 +269,7 @@ if (root) {
                 <nav class="tabs-bar">
                     <button
                         type      = "button"
-                        class     = "tab-btn"
+                        class     = "btn-tab"
                         classList = {{ "tab-active": active_tab() === "songs" }}
                         onClick   = {() => active_tab_set("songs")}
                     >
@@ -277,7 +277,7 @@ if (root) {
                     </button>
                     <button
                         type      = "button"
-                        class     = "tab-btn"
+                        class     = "btn-tab"
                         classList = {{ "tab-active": active_tab() === "tags" }}
                         onClick   = {() => active_tab_set("tags")}
                     >

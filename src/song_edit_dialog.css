@@ -18,7 +18,7 @@
 
 .song-edit-form .input {
     height:        36px;
-    background:    var(--bg-header);
+    background:    var(--bg-input);
     border:        1px solid var(--border);
     border-radius: var(--radius-sm);
     color:         var(--text-main);
@@ -28,7 +28,7 @@
 }
 
 .song-edit-form .input:focus {
-    border-color: var(--accent);
+    border-color: var(--highlight-4);
 }
 
 .song-edit-form .input-error {
@@ -44,30 +44,11 @@
     flex: 1;
 }
 
-.song-edit-form .btn-add {
-    width:           36px;
-    height:          36px;
-    font-size:       18px;
-    font-weight:     700;
-    display:         flex;
-    align-items:     center;
-    justify-content: center;
-    background:      var(--accent);
-    color:           #ffffff;
-    border:          none;
-    border-radius:   var(--radius-sm);
-    cursor:          pointer;
-}
-
-.song-edit-form .btn-add:hover {
-    background: var(--accent-hover);
-}
-
 .song-edit-form .tags-box {
     min-height:    90px;
     max-height:    140px;
     overflow-y:    auto;
-    background:    var(--bg-header);
+    background:    var(--bg-input);
     border:        1px solid var(--border);
     border-radius: var(--radius-sm);
     padding:       8px;
@@ -90,7 +71,7 @@
     display:       inline-flex;
     align-items:   center;
     gap:           6px;
-    background:    var(--bg-card);
+    background:    var(--bg-dialog);
     border:        1px solid var(--border);
     padding:       3px 8px;
     border-radius: 4px;
@@ -103,11 +84,6 @@
     border-color: var(--text-muted);
 }
 
-.song-edit-form .tag-selected {
-    background:   var(--selection) !important;
-    color:        #ffffff !important;
-    border-color: var(--selection) !important;
-}
 
 .song-edit-form .tag-remove-btn {
     background:  transparent;
@@ -159,20 +135,23 @@
 }
 
 .song-edit-form .btn-secondary {
-    background:   transparent;
-    border-color: var(--border);
-    color:        var(--text-main);
+    background:   var(--dark-a-2);
+    border-color: var(--highlight-1);
+    color:        var(--text-main); 
 }
 
 .song-edit-form .btn-secondary:hover:not(:disabled) {
-    background: var(--bg-hover);
+    transform:    translateY(-1px);
+    background:   var(--highlight-hover-bg);
+    border-color: var(--highlight-1);
 }
 
 .song-edit-form .btn-primary {
-    background: var(--accent);
-    color:      #ffffff;
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
 }
 
 .song-edit-form .btn-primary:hover {
-    background: var(--accent-hover);
+    transform:  translateY(-1px);
+    background: var(--highlight-3);
 }

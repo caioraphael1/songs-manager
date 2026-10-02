@@ -18,7 +18,7 @@
 
 .tag-dialog-form .input {
     height:        36px;
-    background:    var(--bg-header);
+    background:    var(--bg-input);
     border:        1px solid var(--border);
     border-radius: var(--radius-sm);
     color:         var(--text-main);
@@ -28,7 +28,7 @@
 }
 
 .tag-dialog-form .input:focus {
-    border-color: var(--accent);
+    border-color: var(--highlight-4);
 }
 
 .tag-dialog-form .input-error {
@@ -54,20 +54,24 @@
 }
 
 .tag-dialog-form .btn-secondary {
-    background:   transparent;
-    border-color: var(--border);
-    color:        var(--text-main);
+    background:   var(--dark-a-2);
+    border-color: var(--highlight-1);
+    color:        var(--text-main); 
 }
 
 .tag-dialog-form .btn-secondary:hover {
-    background: var(--bg-hover);
+    transform:    translateY(-1px);
+    background:   var(--highlight-hover-bg);
+    border-color: var(--highlight-1);
 }
 
+
 .tag-dialog-form .btn-primary {
-    background: var(--accent);
-    color:      #ffffff;
+    background: var(--highlight-2);
+    color:      var(--highlight-text);
 }
 
 .tag-dialog-form .btn-primary:hover {
-    background: var(--accent-hover);
+    transform:  translateY(-1px);
+    background: var(--highlight-3);
 }
