@@ -3,7 +3,16 @@
 
 - Expansion:
     - [ ] ! Tabs for Movies, Books, Mangá, Anime, Series, Videos.
+        - name
+        - score
+        - date
+        - review
+        - imdb score
+        - imdb link
+        - etc
+    - [ ] There should be an option for sorting (by date or score)
 - Utility:
+    - [ ] ! link search if it starts with http, www, etc.
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
     - [ ] Get random playlist with up to 50 songs.
@@ -13,6 +22,7 @@
     - [ ] There's a "home screen" with just the option to create a new db or open an existing one.
     - [ ] Button to 'close' the db and go back to the home screen.
 - Etc:
+    - [ ] Mobile support.
     - [ ] Message warning if the link is broken, somehow.
     - [ ] 'Songs Tab' load times are a bit annoying.
     - [ ] Third tab with logs from all SQL commands that ran.

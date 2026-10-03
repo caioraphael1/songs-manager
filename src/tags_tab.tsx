@@ -138,7 +138,7 @@ export function Tags_Tab(properties: Tags_Tab_Properties) {
                                     >
                                         <td class="col-tag">
                                             <span class="tag-name">
-                                                {tag.nome}
+                                                {tag.name}
                                             </span>
                                             <span class="tag-count">
                                                 ({tag.count})

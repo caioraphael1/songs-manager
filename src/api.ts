@@ -28,20 +28,20 @@ export async function songs_query(filter: types.Search_Filter): Promise<types.So
 }
 
 export async function song_create(
-    nome: string,
+    name: string,
     link: string | null,
     tags: string[],
     ): Promise<number> {
-    return await tauri_core.invoke<number>("song_create", { nome, link, tags });
+    return await tauri_core.invoke<number>("song_create", { name, link, tags });
 }
 
 export async function song_update(
     id:   number,
-    nome: string,
+    name: string,
     link: string | null,
     tags: string[],
     ): Promise<void> {
-    await tauri_core.invoke("song_update", { id, nome, link, tags });
+    await tauri_core.invoke("song_update", { id, name, link, tags });
 }
 
 export async function songs_delete(ids: number[]): Promise<void> {

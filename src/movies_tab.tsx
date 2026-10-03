@@ -2,80 +2,65 @@ import * as solid   from "solid-js";
 import * as types   from "./types";
 import * as api     from "./api";
 import * as youtube from "./youtube";
-import "./songs_tab.css";
+import "./movies_tab.css";
 
-interface Songs_Tab_Properties {
-    songs:            types.Song[];
+interface Movies_Tab_Properties {
+    movies:           types.Movie[];
     total_count:      number;
     search_query:     string;
     on_search_change: (q: string) => void;
-    on_song_new:      () => void;
-    on_song_edit:     (song: types.Song) => void;
-    on_songs_delete:  (ids: number[]) => void;
+    on_movie_new:     () => void;
+    on_movie_edit:    (movie: types.Movie) => void;
+    on_movies_delete: (ids: number[]) => void;
 }
 
-export function Songs_Tab(properties: Songs_Tab_Properties) {
+export function Movies_Tab(properties: Movies_Tab_Properties) {
     const [selected_ids,        selected_ids_set]        = solid.createSignal<number[]>([]);
     const [last_selected_index, last_selected_index_set] = solid.createSignal<number | null>(null);
 
     const selected_songs = solid.createMemo(() =>
-        properties.songs.filter((s) => selected_ids().includes(s.id)),
+        properties.movies.filter((s) => selected_ids().includes(s.id)),
     );
 
     function song_edit_click() {
         const selected = selected_songs()[0];
         if (selected !== undefined && selected_songs().length === 1) {
-            properties.on_song_edit(selected);
+            properties.on_movie_edit(selected);
         }
     }
 
     function song_delete_click() {
         const current_ids = selected_ids();
         if (current_ids.length > 0) {
-            properties.on_songs_delete([...current_ids]);
+            properties.on_movies_delete([...current_ids]);
         }
     }
     
-    const youtube_video_ids = solid.createMemo(() =>
-        selected_songs()
-            .map((s) => youtube.extract_youtube_video_id(s.link))
-            .filter((id): id is string => id !== null),
-    );
-
-    function youtube_create_playlist() {
-        const ids = youtube_video_ids();
-        if (ids.length === 0) return;
-        const playlist_url = youtube.build_youtube_playlist_url(ids);
-        if (playlist_url) {
-            api.url_open(playlist_url);
-        }
-    }
-
-    function row_click(song: types.Song, index: number, e: MouseEvent) {
+    function row_click(movie: types.Movie, index: number, e: MouseEvent) {
         const last_idx = last_selected_index();
         if (e.shiftKey && last_idx !== null) {
             const start     = Math.min(last_idx, index);
             const end       = Math.max(last_idx, index);
-            const range_ids = properties.songs.slice(start, end + 1).map((s) => s.id);
+            const range_ids = properties.movies.slice(start, end + 1).map((s) => s.id);
             const combined  = new Set([...selected_ids(), ...range_ids]);
             selected_ids_set(Array.from(combined));
         } else if (e.ctrlKey || e.metaKey) {
-            if (selected_ids().includes(song.id)) {
-                selected_ids_set(selected_ids().filter((id) => id !== song.id));
+            if (selected_ids().includes(movie.id)) {
+                selected_ids_set(selected_ids().filter((id) => id !== movie.id));
             } else {
-                selected_ids_set([...selected_ids(), song.id]);
+                selected_ids_set([...selected_ids(), movie.id]);
             }
             last_selected_index_set(index);
         } else {
-            selected_ids_set([song.id]);
+            selected_ids_set([movie.id]);
             last_selected_index_set(index);
         }
     }
 
-    function row_double_click(song: types.Song, e: MouseEvent) {
+    function row_double_click(movie: types.Movie, e: MouseEvent) {
         const target = e.target as HTMLElement;
         if (target.closest(".btn-play")) return;
-        properties.on_song_edit(song);
+        properties.on_movie_edit(movie);
     }
 
     function play_btn_click(link: string | null, e: MouseEvent) {
@@ -107,20 +92,20 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
     });
 
     return (
-        <div class="songs-panel panel-card">
+        <div class="movies-panel panel-card">
             {/* Toolbar Header */}
             <div class="toolbar">
                 <div class="toolbar-left">
                     <button
                         type    = "button"
-                        class   = "btn btn-song-new"
-                        onClick = {properties.on_song_new}
+                        class   = "btn btn-movie-new"
+                        onClick = {properties.on_movie_new}
                     >
-                        ＋ New song
+                        ＋ New movie
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-song-edit"
+                        class    = "btn btn-movie-edit"
                         disabled = {selected_ids().length !== 1}
                         onClick  = {song_edit_click}
                     >
@@ -128,7 +113,7 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                     </button>
                     <button
                         type     = "button"
-                        class    = "btn btn-song-delete"
+                        class    = "btn btn-movie-delete"
                         disabled = {selected_ids().length === 0}
                         onClick  = {song_delete_click}
                     >
@@ -151,7 +136,6 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         <line x1="10.5" y1="10.5" x2="14" y2="14" />
                     </svg>
                     <button
-                        type    = "button"
                         class   = {"search-clear-btn" + (properties.search_query ? " visible" : "")}
                         onClick = {(e) => {
                             e.stopPropagation();
@@ -162,89 +146,51 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
                         tabIndex = {properties.search_query ? 0 : -1}
                     >
                         <svg viewBox="0 0 12 12" aria-hidden="true">
-                            <line x1="2" y1="2" x2="10" y2="10" />
-                            <line x1="10" y1="2" x2="2" y2="10" />
+                            <line x1="2"  y1="2" x2="10" y2="10" />
+                            <line x1="10" y1="2" x2="2"  y2="10" />
                         </svg>
-                    </button>
-                </div>
-
-                <div class="toolbar-right">
-                    <button
-                        type     = "button"
-                        class    = "btn btn-yt-playlist"
-                        disabled = {youtube_video_ids().length < 2}
-                        onClick  = {youtube_create_playlist}
-                        title    = {
-                            youtube_video_ids().length < 2
-                                ? "Select songs with Youtube URLs"
-                                : `Create playlist with ${youtube_video_ids().length} video(s)`
-                        }
-                    >
-                        Create YouTube Playlist
                     </button>
                 </div>
             </div>
 
-            {/* Songs Table Grid */}
+            {/* Movies Table Grid */}
             <div class="table-container">
-                <table class="songs-table">
+                <table class="movies-table">
                     <thead>
                         <tr>
-                            <th class="col-play-title"></th>
-                            <th class="col-name-title">Name</th>
-                            <th class="col-tags-title">Tags</th>
+                            <th class="col-name-title">  Name  </th>
+                            <th class="col-score-title"> Score </th>
+                            <th class="col-date-title">  Date  </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {properties.songs.length === 0 ? (
+                        {properties.movies.length === 0 ? (
                             <tr>
                                 <td
                                     colspan = "3"
                                     class   = "empty-cell"
                                 >
-                                    No songs found
+                                    No movies found
                                 </td>
                             </tr>
-                        ) : (
-                            <solid.For each={properties.songs}>
-                                {(song, index) => (
+                            ) : (
+                            <solid.For each={properties.movies}>
+                                {(movie, index) => (
                                     <tr
                                         class      = "table-row"
                                         classList  = {{
-                                            "row-selected": selected_ids().includes(song.id),
+                                            "row-selected": selected_ids().includes(movie.id),
                                         }}
                                         onClick    = {(e) =>
-                                            row_click(song, index(), e)
+                                            row_click(movie, index(), e)
                                         }
                                         onDblClick = {(e) =>
-                                            row_double_click(song, e)
+                                            row_double_click(movie, e)
                                         }
                                     >
-                                        <td class="col-play">
-                                            {song.link && (
-                                                <button
-                                                    type    = "button"
-                                                    class   = "btn-play"
-                                                    title   = {`Open link: ${song.link}`}
-                                                    onClick = {(e) =>
-                                                        play_btn_click(
-                                                            song.link,
-                                                            e,
-                                                        )
-                                                    }
-                                                >
-                                                    ▶
-                                                </button>
-                                            )}
-                                        </td>
-                                        <td class="col-name">{song.name}</td>
-                                        <td class="col-tags">
-                                            <div class="tags-list">
-                                                <solid.For each={song.tags}>
-                                                    {(tag) => <span class="tag">{tag}</span>}
-                                                </solid.For>
-                                            </div>
-                                        </td>
+                                        <td class="col-name">{movie.name}</td>
+                                        <td class="col-score">{movie.score}</td>
+                                        <td class="col-date">{movie.date}</td>
                                     </tr>
                                 )}
                             </solid.For>
@@ -256,8 +202,8 @@ export function Songs_Tab(properties: Songs_Tab_Properties) {
             {/* Footer */}
             <div class="footer">
                 <span class="stats-text">
-                    Showing {properties.songs.length} of {properties.total_count}{" "}
-                    song(s)
+                    Showing {properties.movies.length} of {properties.total_count}{" "}
+                    movie(s)
                 </span>
             </div>
         </div>

@@ -22,6 +22,7 @@
     gap:         8px;
 }
 
+/* BTN */
 .tags-panel .btn {
     height:          36px;
     padding:         0 14px;
@@ -36,13 +37,14 @@
     white-space:     nowrap;
     transition:      all 0.15s ease;
 }
-
 .tags-panel .btn:disabled {
     opacity: 0.45;
     cursor:  not-allowed;
 }
-/* BTN NEW TAG */
+
+/* BTN TAG NEW */
 .tags-panel .btn-tag-new {
+    width:      110px;
     background: var(--highlight-2);
     color:      var(--highlight-text);
 }
@@ -50,9 +52,9 @@
     transform:  translateY(-1px);
     background: var(--highlight-3);
 }
-
-/* BTN EDIT */
+/* BTN TAG EDIT */
 .tags-panel .btn-tag-edit {
+    width:        64px;
     background:   var(--dark-a-2);
     border-color: var(--highlight-1);
     color:        var(--text-main); 
@@ -62,9 +64,9 @@
     background:   var(--highlight-hover-bg);
     border-color: var(--highlight-1);
 }
-
-/* BTN DELETE */
+/* BTN TAG DELETE */
 .tags-panel .btn-tag-delete {
+    width:        64px;
     background:   transparent;
     border-color: var(--danger);
     color:        var(--danger);

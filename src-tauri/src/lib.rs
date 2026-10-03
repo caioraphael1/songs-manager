@@ -153,7 +153,7 @@ pub struct Search_Filter {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Song_Record {
     pub id:   i64,
-    pub nome: String,
+    pub name: String,
     pub tags: Vec<String>,
     pub link: Option<String>,
 }
@@ -241,7 +241,7 @@ fn songs_query(filter: Search_Filter, state: State<'_, App_State>) -> Result<Son
 
             Ok(Song_Record {
                 id:   row.get(0)?,
-                nome: row.get(1)?,
+                name: row.get(1)?,
                 tags: tags,
                 link: row.get(3)?,
             })
@@ -258,7 +258,7 @@ fn songs_query(filter: Search_Filter, state: State<'_, App_State>) -> Result<Son
 
 #[tauri::command]
 fn song_create(
-    nome:  String,
+    name:  String,
     link:  Option<String>,
     tags:  Vec<String>,
     state: State<'_, App_State>,
@@ -279,7 +279,7 @@ fn song_create(
 
     let res = tx.execute(
         "INSERT INTO musicas (nome, link) VALUES (?, ?)",
-        params![nome.trim(), clean_link],
+        params![name.trim(), clean_link],
     );
 
     match res {
@@ -312,7 +312,7 @@ fn song_create(
 #[tauri::command]
 fn song_update(
     id:    i64,
-    nome:  String,
+    name:  String,
     link:  Option<String>,
     tags:  Vec<String>,
     state: State<'_, App_State>,
@@ -333,7 +333,7 @@ fn song_update(
     });
     let res = tx.execute(
         "UPDATE musicas SET nome = ?, link = ? WHERE id = ?",
-        params![nome.trim(), clean_link, id],
+        params![name.trim(), clean_link, id],
     );
 
     match res {
@@ -415,7 +415,7 @@ fn songs_delete(ids: Vec<i64>, state: State<'_, App_State>) -> Result<(), String
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Tag_Record {
     pub id:    i64,
-    pub nome:  String,
+    pub name:  String,
     pub count: i64,
 }
 
@@ -437,8 +437,8 @@ fn all_tags_query(state: State<'_, App_State>) -> Result<Vec<Tag_Record>, String
     let rows = stmt
         .query_map([], |row| {
             Ok(Tag_Record {
-                id: row.get(0)?,
-                nome: row.get(1)?,
+                id:    row.get(0)?,
+                name:  row.get(1)?,
                 count: row.get(2)?,
             })
         })
