@@ -1,35 +1,46 @@
+/* The transparent background behind the dialog */
 .dialog-backdrop {
+    display:         flex;
     position:        fixed;
     inset:           0;
     background:      rgba(0, 0, 0, 0.65);
-    display:         flex;
     align-items:     center;
     justify-content: center;
     z-index:         999;
 }
 
+
 .dialog-card {
-    background:     var(--bg-dialog);
-    border:         1px solid var(--border);
-    border-radius:  var(--radius-card);
-    min-width:      420px;
+    min-width:      400px;
     max-width:      90vw;
-    box-shadow:     0 10px 25px rgba(0, 0, 0, 0.5);
+    max-height:     90vh;
+
     display:        flex;
     flex-direction: column;
     overflow:       hidden;
+
+    background:     var(--bg-dialog);
+    border:         1px solid var(--border);
+    border-radius:  var(--radius-card);
+    box-shadow:     0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .dialog-header {
-    padding: 18px 24px 8px;
+    padding:     18px 24px 8px;
+    flex-shrink: 0;
 }
 
 .dialog-header h2 {
-    font-size:   18px;
+    font-size:   20px;
     font-weight: 700;
     color:       var(--text-main);
 }
 
 .dialog-body {
-    padding: 8px 24px 22px;
+    padding:        8px 24px 22px;
+    
+    flex:           1 1 auto;
+    min-height:     0;          /* lets it shrink below its content height */
+    display:        flex;
+    flex-direction: column;
 }

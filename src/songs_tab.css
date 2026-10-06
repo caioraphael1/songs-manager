@@ -256,12 +256,12 @@
     padding:    0      !important;
 }
 .songs-panel thead th.col-name-title {
-    padding:     0 64px 0 0;
+    padding:     0 15% 0 0;
     font-weight: bold;
     font-size:   small;
 }
 .songs-panel thead th.col-tags-title {
-    padding:     0 64px 0 0;
+    padding:     0 15% 0 0;
     font-weight: bold;
     font-size:   small;
 }

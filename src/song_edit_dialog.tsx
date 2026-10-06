@@ -163,7 +163,7 @@ export function Song_Edit_Dialog(properties: Song_Edit_Dialog_Properties) {
                 
                 {/* Link */}
                 <div class="form-group">
-                    <label for="song-link">Link (optional)</label>
+                    <label for="song-link">Link</label>
                     <input
                         id          = "song-link"
                         type        = "text"
@@ -175,7 +175,7 @@ export function Song_Edit_Dialog(properties: Song_Edit_Dialog_Properties) {
                 </div>
 
                 {/* Tags not being used */}
-                <div class="form-group">
+                <div class="form-group tags-group">
                     <label for="tag-input">Tags not being used</label>
                     {/* Text input
                     <div class="tag-input-row">
@@ -197,7 +197,7 @@ export function Song_Edit_Dialog(properties: Song_Edit_Dialog_Properties) {
                     </div> */}
                     <div class="tags-box">
                         {tags_not_used()?.length === 0 ? (
-                            <div class="no-tags">All tags are being used</div>
+                            <div class="text-no-tags">All tags are being used</div>
                         ) : (
                             <div class="tags-list">
                                 <solid.For each={tags_not_used()}>
@@ -222,11 +222,11 @@ export function Song_Edit_Dialog(properties: Song_Edit_Dialog_Properties) {
                 </div>
 
                 {/* Tags being used */}
-                <div class="form-group">
+                <div class="form-group tags-group tags-being-used">
                     <label for="tag-input">Tags being used</label>
-                    <div class="tags-box">
+                    <div class="tags-box tags-box-being-used">
                         {tags().length === 0 ? (
-                            <div class="no-tags">No tags are being used</div>
+                            <div class="text-no-tags">No tags are being used</div>
                             ) : (
                             <div class="tags-list">
                                 <solid.For each={tags()}>

@@ -2,17 +2,24 @@
 ## TODOs
 
 - Expansion:
+    - [ ] ! Movies:
+        - Options:
+            - [x] name
+            - [x] score
+            - [x] date
+            - [x] review
+            - imdb score
+            - imdb link
+            - etc
+        - [ ] BACKEND: Database entry for movies.
+            - [ ] ! Focus on this first, it's much more important than the frontend.
+            - 
+        - [ ] Movie New dialog / Movie Edit dialog.
+        - [ ] Sorting option for date or score.
     - [ ] ! Tabs for Movies, Books, Mangá, Anime, Series, Videos.
-        - name
-        - score
-        - date
-        - review
-        - imdb score
-        - imdb link
-        - etc
-    - [ ] There should be an option for sorting (by date or score)
 - Utility:
     - [ ] ! link search if it starts with http, www, etc.
+    - [ ] ! search fold: `cicero` doesn't match `cícero`
     - [ ] Button to copy to clipboard, getting all links separated by spaces.
     - [ ] Button to copy 'md formatted (`[]()`)' to clipboard, getting all links separated by spaces.
     - [ ] Get random playlist with up to 50 songs.

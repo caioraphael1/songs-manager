@@ -1,21 +1,31 @@
+/* BODY */
 .song-edit-form.form-container {
-    display:        flex;
-    flex-direction: column;
-    gap:            14px;
-    width:          420px;
+    display:          flex;
+    flex-direction:   column;
+    gap:              14px;
+    width:            700px;
+    flex:             1 1 auto;
+    min-height:       0;
+    overflow-y:       auto;   /* last-resort fallback if the screen is extremely short */
+    scrollbar-gutter: stable;
 }
 
+
+/* CONTAINER GROUP */
+/* Doesn't shrink */
 .song-edit-form .form-group {
     display:        flex;
     flex-direction: column;
     gap:            5px;
+    flex-shrink:    0;
 }
 
 .song-edit-form label {
-    font-size: 12px;
+    font-size: 12.1px;
     color:     var(--text-muted);
 }
 
+/* INPUT */
 .song-edit-form .input {
     height:        36px;
     background:    var(--bg-input);
@@ -26,47 +36,64 @@
     outline:       none;
     transition:    border-color 0.15s ease;
 }
-
 .song-edit-form .input:focus {
     border-color: var(--highlight-4);
 }
-
 .song-edit-form .input-error {
     border-color: var(--danger) !important;
 }
 
+/* TAG INPUT */
 .song-edit-form .tag-input-row {
     display: flex;
     gap:     6px;
 }
-
 .song-edit-form .tag-input-row .input {
     flex: 1;
 }
 
-.song-edit-form .tags-box {
-    min-height:    90px;
-    max-height:    140px;
-    overflow-y:    auto;
-    background:    var(--bg-input);
-    border:        1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding:       8px;
+/* TAGS BOX */
+/* Tag groups may shrink when the dialog hits 90vh */
+.song-edit-form .form-group.tags-group {
+    flex:       0 1 auto;
+    min-height: 110px;      /* label + gap + tags-box min-height */
+}
+.song-edit-form .form-group.tags-group.tags-being-used {
+    min-height: 90px;      /* label + gap + tags-box-being-used min-height */
 }
 
-.song-edit-form .no-tags {
+
+/* Grows with content, shrinks (and scrolls) only when needed */
+.song-edit-form .tags-box {
+    flex:             0 1 auto;
+    min-height:       90px;
+    overflow-y:       auto;
+    scrollbar-gutter: stable;
+    background:       var(--bg-input);
+    border:           1px solid var(--border);
+    border-radius:    var(--radius-sm);
+    padding:          8px;
+}
+
+.song-edit-form .tags-box.tags-box-being-used {
+    min-height: 70px;
+}
+
+.song-edit-form .text-no-tags {
     color:       var(--text-muted);
     font-size:   12px;
     text-align:  center;
     padding-top: 30px;
 }
-
 .song-edit-form .tags-list {
     display:   flex;
     flex-wrap: wrap;
     gap:       6px;
 }
 
+
+
+/* TAG ITEM */
 .song-edit-form .tag-item {
     display:       inline-flex;
     align-items:   center;
@@ -79,7 +106,6 @@
     cursor:        pointer;
     user-select:   none;
 }
-
 .song-edit-form .tag-item:hover {
     border-color: var(--text-muted);
 }
@@ -99,8 +125,9 @@
 .song-edit-form .footer-actions {
     display:         flex;
     justify-content: flex-end;
+    flex-shrink:     0;
     gap:             10px;
-    margin-top:      10px;
+    margin-top:      5px;
 }
 
 .song-edit-form .btn {
